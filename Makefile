@@ -1,9 +1,15 @@
+#!/bin/bash
+
 # DOCKER -------------------------------------------------------
 file := "docker-compose-dev.yml"
 
 up:
-	# Create the image and container
+# Create the image and container
+ifeq (${file}, "docker-compose-dev.yml")
 	sudo docker-compose -f ${file} up -d
+else
+	sudo docker-compose -f ${file} up
+endif
 
 logs:
 	# See the logs from application
@@ -16,6 +22,10 @@ start:
 stop:
 	# Stop containers
 	sudo docker-compose -f ${file} stop
+
+ps:
+	# Verify running containers
+	sudo docker-compose -f ${file} ps
 
 rm:
 	# Remove containers
