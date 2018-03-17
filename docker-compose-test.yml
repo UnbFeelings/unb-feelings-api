@@ -6,7 +6,7 @@ services:
     command: bash -c "chmod +x test.sh && ./test.sh"
     volumes:
       - .:/home/developer/software
-    image: unbfeelings-test:1.0
+    image: unbfeelings:1.0
     container_name: unbfeelings-test
     environment:
       - MODE_ENVIROMENT=development

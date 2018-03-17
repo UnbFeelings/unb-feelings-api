@@ -7,7 +7,7 @@ services:
       - .:/home/developer/software
     ports:
       - "8000:8000"
-    image: unbfeelings-dev:1.0
+    image: unbfeelings:1.0
     container_name: unbfeelings-dev
     environment:
       - MODE_ENVIROMENT=development
