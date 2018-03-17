@@ -1,0 +1,31 @@
+version: '2'
+services:
+  # Server
+  nginx_back:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./unbfeelings/staticfiles/:/static
+    ports:
+      - "9000:8000"
+    depends_on:
+      - unbfeelings-prod
+
+  # Production enviroment
+  unbfeelings-prod:
+    build: .
+    command: bash -c "chmod +x prod.sh && ./prod.sh"
+    volumes:
+      - .:/home/developer/software
+    image: unbfeelings:1.0
+    container_name: unbfeelings-prod
+    environment:
+      - MODE_ENVIROMENT=production
+    depends_on:
+      - db
+
+  # Postgresql database
+  db:
+    image: postgres
+    container_name: unbfeelings_db
