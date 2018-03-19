@@ -1,0 +1,23 @@
+sudo: required
+language: python
+
+# Specify the version of python
+python:
+  - "3.6"
+
+# Specify branchs that travis will monitor
+branches:
+  only:
+    - master
+
+# Use docker to deploy
+service:
+  - docker
+
+# Specify the docker-compose version to deploy
+env:
+  - DOCKER_COMPOSE_VERSION=1.4.2
+
+# Install project dependencies
+install:
+  - docker-compose -f docker-compose-test.yml up

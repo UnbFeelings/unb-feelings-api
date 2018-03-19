@@ -1,0 +1,12 @@
+version: '2'
+services:
+  # Test enviroment
+  unbfeelings-test:
+    build: .
+    command: bash -c "chmod +x test.sh && ./test.sh"
+    volumes:
+      - .:/home/developer/software
+    image: unbfeelings:1.0
+    container_name: unbfeelings-test
+    environment:
+      - MODE_ENVIROMENT=development
