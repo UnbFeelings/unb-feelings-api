@@ -3,7 +3,7 @@ services:
   # Test enviroment
   unbfeelings-test:
     build: .
-    command: bash -c "chmod +x test.sh && ./test.sh"
+    command: bash -c "chown developer db.sqlite3 && python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py test"
     volumes:
       - .:/home/developer/software
     image: unbfeelings:1.0
