@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from api.views import CourseViewSet, SubjectViewSet
+from api.views import CourseViewSet, SubjectViewSet, TagViewSet
 
 ROUTER = DefaultRouter()
 ROUTER.register(r'courses', CourseViewSet, base_name='courses')
 ROUTER.register(r'subjects', SubjectViewSet, base_name='subjects')
+ROUTER.register(r'tags', TagViewSet, base_name='tags')
 
 
 urlpatterns = [
