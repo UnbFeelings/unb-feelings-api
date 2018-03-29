@@ -19,3 +19,8 @@ class Tag(models.Model):
 
     def __str(self):
         return self.description
+
+class Post(models.Model):
+	content = models.CharField(max_length=280)
+	tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+
