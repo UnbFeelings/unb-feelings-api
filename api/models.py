@@ -15,12 +15,15 @@ class Subject(models.Model):
 
 class Tag(models.Model):
     description = models.CharField(max_length=200)
-    quantity = models.IntegerField()
+    _quantity = models.IntegerField(default=0, null=True, blank=True)
+    
+    @property
+    def quantity(self):
+        return len(self.post_set.all())
 
-    def __str(self):
+    def __str__(self):
         return self.description
 
 class Post(models.Model):
-	content = models.CharField(max_length=280)
-	tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-
+    content = models.CharField(max_length=280)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)

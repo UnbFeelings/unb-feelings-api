@@ -19,6 +19,7 @@ class SubjectSerializer(serializers.ModelSerializer):
         ]
 
 class TagSerializer(serializers.ModelSerializer):
+    quantity = serializers.IntegerField(read_only=True)
     class Meta:
         model = Tag
         fields = [
@@ -28,10 +29,10 @@ class TagSerializer(serializers.ModelSerializer):
         ]
 
 class PostSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Post
-		fields = [
-			'id',
-			'content',
-			'tag',
-		]
+    class Meta:
+        model = Post
+        fields = [
+            'id',
+            'content',
+            'tag',
+        ]
