@@ -23,3 +23,7 @@ JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(weeks=2),
 }
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False
+}

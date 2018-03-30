@@ -9,15 +9,15 @@ APPS_DJANGO = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api',
 ]
 
 EXTERNAL_APPS = [
     'rest_framework',
     'corsheaders',
+    'rest_framework_swagger',
 ]
 
-LOCAL_APPS = []
+LOCAL_APPS = ['api']
 
 PRODUCTION_APPS = APPS_DJANGO + EXTERNAL_APPS + LOCAL_APPS
 

@@ -39,11 +39,29 @@ class StudentViewSet(ModelViewSet):
         API endpoint that allows all users to be viewed.
         ---
         Response example:
-        Return a list of:
         ```
         {
-            "id": "integer",
-            "email": "string@email.com"
+          "count": 2,
+          "next": null,
+          "previous": null,
+          "results": [
+            {
+              "id": 1,
+              "email": "johndoe_1@email.com",
+              "course": {
+                "id": 1,
+                "name": "Engenharia de Software"
+              }
+            },
+            {
+              "id": 2,
+              "email": "johndoe_2@email.com",
+              "course": {
+                "id": 3,
+                "name": "Engenharia Eletrônica"
+              }
+            }
+          ]
         }
         ```
         """
@@ -61,15 +79,20 @@ class StudentViewSet(ModelViewSet):
         Body example:
         ```
         {
-            "email": "string@email.com",
-            "password": "string"
+          "email": "johndoe@email.com",
+          "password": "string123",
+          "course": 1
         }
         ```
         Response example:
         ```
         {
+          "id": 1,
+          "email": "johndoe@email.com",
+          "course": {
             "id": 1,
-            "email": "string@email.com"
+            "name": "Engenharia de Software"
+          }
         }
         ```
         """
@@ -88,14 +111,17 @@ class StudentViewSet(ModelViewSet):
 
     def retrieve(self, request, pk=None):
         """
-        API endpoint that allows allow the return\
-        of a user through the method Get.
+        API endpoint that allows a specific user to be viewed.
         ---
         Response example:
         ```
         {
-            "id": "integer",
-            "email": "string@email.com"
+          "id": 1,
+          "email": "johndoe@email.com",
+          "course": {
+            "id": 1,
+            "name": "Engenharia de Software"
+          }
         }
         ```
         """
@@ -109,13 +135,21 @@ class StudentViewSet(ModelViewSet):
         """
         API endpoint that allows a user to be partial edited.
         ---
-        Parameters:
-        User ID and a JSON with one or more attributes of user
-
-        Example:
+        Body example:
         ```
         {
-            "email": "string@email.com"
+          "email": "string@email.com"
+        }
+        ```
+        Response example:
+        ```
+        {
+          "id": 1,
+          "email": "string@email.com",
+          "course": {
+            "id": 1,
+            "name": "Engenharia de Software"
+          }
         }
         ```
         """
@@ -127,24 +161,30 @@ class StudentViewSet(ModelViewSet):
         """
         API endpoint that allows a user to be edited.
         ---
-        Parameters:
-        User ID and a JSON with at least username,
-        telephone and password of user
-        Example:
+        Body example:
         ```
         {
-            "username": "string",
-            "password": "string"
+          "email": "string@email.com",
+          "password": "string123",
+          "course": 3
+        }
+        ```
+        Response example:
+        ```
+        {
+          "id": 1,
+          "email": "string@email.com",
+          "course": {
+            "id": 3,
+            "name": "Engenharia Eletrônica"
+          }
         }
         ```
         """
-        response = super(
-            StudentViewSet,
-            self).update(
-            request,
-            pk,
-            **kwargs
-            )
+        response = super(StudentViewSet, self).update(request, pk, **kwargs)
+        course = Course.objects.get(id=response.data['course'])
+        course_serializer = CourseSerializer(course)
+        response.data['course'] = course_serializer.data
         return response
 
 
