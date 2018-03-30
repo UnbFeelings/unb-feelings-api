@@ -25,8 +25,6 @@ class SubjectSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    course = CourseSerializer()
-
     class Meta:
         model = Student
         fields = [

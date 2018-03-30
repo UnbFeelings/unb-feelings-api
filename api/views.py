@@ -1,7 +1,11 @@
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 
 from .models import (
     Course, Post, Student, Subject, Tag
+)
+from .permissions import (
+    AdminItemPermissions, StudentPermissions
 )
 from .serializers import (
     CourseSerializer, PostSerializer, StudentSerializer, SubjectSerializer,
@@ -10,11 +14,13 @@ from .serializers import (
 
 
 class CourseViewSet(ModelViewSet):
+    permission_classes = (AdminItemPermissions,)
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
 
 class SubjectViewSet(ModelViewSet):
+    permission_classes = (AdminItemPermissions,)
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
 
@@ -24,7 +30,7 @@ class StudentViewSet(ModelViewSet):
 
     API endpoint that allows users to be viewed, created, deleted or edited.
     """
-    # permission_classes = (StudentPermissions,)
+    permission_classes = (StudentPermissions,)
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
@@ -42,6 +48,10 @@ class StudentViewSet(ModelViewSet):
         ```
         """
         response = super(StudentViewSet, self).list(request)
+        for student in response.data['results']:
+            course = Course.objects.get(id=student['course'])
+            course_serializer = CourseSerializer(course)
+            student['course'] = course_serializer.data
         return response
 
     def create(self, request):
@@ -64,6 +74,9 @@ class StudentViewSet(ModelViewSet):
         ```
         """
         response = super(StudentViewSet, self).create(request)
+        course = Course.objects.get(id=response.data['course'])
+        course_serializer = CourseSerializer(course)
+        response.data['course'] = course_serializer.data
         return response
 
     def destroy(self, request, pk=None):
@@ -87,6 +100,9 @@ class StudentViewSet(ModelViewSet):
         ```
         """
         response = super(StudentViewSet, self).retrieve(request, pk)
+        course = Course.objects.get(id=response.data['course'])
+        course_serializer = CourseSerializer(course)
+        response.data['course'] = course_serializer.data
         return response
 
     def partial_update(self, request, pk=None, **kwargs):
@@ -133,10 +149,12 @@ class StudentViewSet(ModelViewSet):
 
 
 class TagViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
 class PostViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Post.objects.all()
     serializer_class = PostSerializer
