@@ -1,5 +1,9 @@
 from rest_framework import serializers
-from .models import Course, Subject, Tag, Post
+
+from .models import (
+    Course, Post, Student, Subject, Tag
+)
+
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,6 +12,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'id',
             'name',
         ]
+
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,8 +23,36 @@ class SubjectSerializer(serializers.ModelSerializer):
             'course',
         ]
 
+
+class StudentSerializer(serializers.ModelSerializer):
+    course = CourseSerializer()
+
+    class Meta:
+        model = Student
+        fields = [
+            'id',
+            'email',
+            'password',
+            'course'
+        ]
+
+        extra_kwargs = {
+            'password': {
+                'write_only': True
+            },
+        }
+
+    def create(self, validated_data):
+        user = Student(**validated_data)
+        password = validated_data['password']
+        user.set_password(password)
+        user.save()
+        return user
+
+
 class TagSerializer(serializers.ModelSerializer):
     quantity = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Tag
         fields = [
@@ -27,6 +60,7 @@ class TagSerializer(serializers.ModelSerializer):
             'description',
             'quantity',
         ]
+
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:

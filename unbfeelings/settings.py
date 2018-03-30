@@ -24,6 +24,7 @@ from unbfeelings.config.i18n import (
 from unbfeelings.config.rest import (
     REST_FRAMEWORK, JWT_AUTH
 )
+from unbfeelings.config.authentication import AUTH_USER_MODEL
 from unbfeelings.config.middleware import MIDDLEWARE
 from unbfeelings.config.security import SECRET_KEY
 from unbfeelings.config.templates import TEMPLATES
