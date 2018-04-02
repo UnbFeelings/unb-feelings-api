@@ -1,12 +1,200 @@
-from django.shortcuts import render
-from rest_framework import routers, serializers, viewsets
-from .models import Course, Subject
-from .serializers import CourseSerializer, SubjectSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.viewsets import ModelViewSet
 
-class CourseViewSet(viewsets.ModelViewSet):
+from .models import (
+    Course, Post, Student, Subject, Tag
+)
+from .permissions import (
+    AdminItemPermissions, StudentPermissions
+)
+from .serializers import (
+    CourseSerializer, PostSerializer, StudentSerializer, SubjectSerializer,
+    TagSerializer
+)
+
+
+class CourseViewSet(ModelViewSet):
+    permission_classes = (AdminItemPermissions,)
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
-class SubjectViewSet(viewsets.ModelViewSet):
+
+class SubjectViewSet(ModelViewSet):
+    permission_classes = (AdminItemPermissions,)
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
+
+
+class StudentViewSet(ModelViewSet):
+    """Description: StudentViewSet.
+
+    API endpoint that allows users to be viewed, created, deleted or edited.
+    """
+    permission_classes = (StudentPermissions,)
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+    def list(self, request):
+        """
+        API endpoint that allows all users to be viewed.
+        ---
+        Response example:
+        ```
+        {
+          "count": 2,
+          "next": null,
+          "previous": null,
+          "results": [
+            {
+              "id": 1,
+              "email": "johndoe_1@email.com",
+              "course": {
+                "id": 1,
+                "name": "Engenharia de Software"
+              }
+            },
+            {
+              "id": 2,
+              "email": "johndoe_2@email.com",
+              "course": {
+                "id": 3,
+                "name": "Engenharia Eletrônica"
+              }
+            }
+          ]
+        }
+        ```
+        """
+        response = super(StudentViewSet, self).list(request)
+        for student in response.data['results']:
+            course = Course.objects.get(id=student['course'])
+            course_serializer = CourseSerializer(course)
+            student['course'] = course_serializer.data
+        return response
+
+    def create(self, request):
+        """
+        API endpoint that allows users to be created.
+        ---
+        Body example:
+        ```
+        {
+          "email": "johndoe@email.com",
+          "password": "string123",
+          "course": 1
+        }
+        ```
+        Response example:
+        ```
+        {
+          "id": 1,
+          "email": "johndoe@email.com",
+          "course": {
+            "id": 1,
+            "name": "Engenharia de Software"
+          }
+        }
+        ```
+        """
+        response = super(StudentViewSet, self).create(request)
+        course = Course.objects.get(id=response.data['course'])
+        course_serializer = CourseSerializer(course)
+        response.data['course'] = course_serializer.data
+        return response
+
+    def destroy(self, request, pk=None):
+        """
+        API endpoint that allows users to be deleted.
+        """
+        response = super(StudentViewSet, self).destroy(request, pk)
+        return response
+
+    def retrieve(self, request, pk=None):
+        """
+        API endpoint that allows a specific user to be viewed.
+        ---
+        Response example:
+        ```
+        {
+          "id": 1,
+          "email": "johndoe@email.com",
+          "course": {
+            "id": 1,
+            "name": "Engenharia de Software"
+          }
+        }
+        ```
+        """
+        response = super(StudentViewSet, self).retrieve(request, pk)
+        course = Course.objects.get(id=response.data['course'])
+        course_serializer = CourseSerializer(course)
+        response.data['course'] = course_serializer.data
+        return response
+
+    def partial_update(self, request, pk=None, **kwargs):
+        """
+        API endpoint that allows a user to be partial edited.
+        ---
+        Body example:
+        ```
+        {
+          "email": "string@email.com"
+        }
+        ```
+        Response example:
+        ```
+        {
+          "id": 1,
+          "email": "string@email.com",
+          "course": {
+            "id": 1,
+            "name": "Engenharia de Software"
+          }
+        }
+        ```
+        """
+        response = \
+            super(StudentViewSet, self).partial_update(request, pk, **kwargs)
+        return response
+
+    def update(self, request, pk=None, **kwargs):
+        """
+        API endpoint that allows a user to be edited.
+        ---
+        Body example:
+        ```
+        {
+          "email": "string@email.com",
+          "password": "string123",
+          "course": 3
+        }
+        ```
+        Response example:
+        ```
+        {
+          "id": 1,
+          "email": "string@email.com",
+          "course": {
+            "id": 3,
+            "name": "Engenharia Eletrônica"
+          }
+        }
+        ```
+        """
+        response = super(StudentViewSet, self).update(request, pk, **kwargs)
+        course = Course.objects.get(id=response.data['course'])
+        course_serializer = CourseSerializer(course)
+        response.data['course'] = course_serializer.data
+        return response
+
+
+class TagViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
+class PostViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
