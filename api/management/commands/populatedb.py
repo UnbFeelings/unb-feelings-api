@@ -12,8 +12,8 @@ class Command(BaseCommand):
         tree = ET.parse(filename)
         root = tree.getroot()
         subjects = []
-        
         subject = Subject.objects.all()
+        self.create_courses()
         if subject.count() <= 0:
            for child in root:
             for v in child:
@@ -24,4 +24,20 @@ class Command(BaseCommand):
         if len(subjects):
             Subject.objects.bulk_create(subjects)
             self.stdout.write("Subjects added!")
-            
+        else:
+            self.stdout.write("No subjects added. Please remove already inserted subjects from db!")
+
+    def create_courses(self):
+        c = Course.objects.all()
+        if c.count() <= 0:
+            courses_name = ["ENGENHARIA" ,"SOFTWARE", "ELETRONICA", "AEROESPACIAL", "ENERGIA", "AUTOMOTIVA"]
+            courses = []
+            for name in courses_name:
+                course = Course(name=name)
+                courses.append(course)
+
+            Course.objects.bulk_create(courses)
+            self.stdout.write("Courses added!")
+        else:
+            self.stdout.write("No courses added. Please remove already inserted courses from db!")
+                
