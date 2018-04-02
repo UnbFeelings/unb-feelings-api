@@ -56,6 +56,9 @@ migrate: manage.py
 	# Migrate all migrations on database
 	sudo docker exec ${container} python3 manage.py migrate
 
+populate: manage.py
+	sudo docker exec ${container} python3 manage.py populatedb
+
 sql: manage.py
 	# Show SQL commands
 	sudo docker exec ${container} python3 manage.py sqlmigrate ${app_label} ${migration_name}
