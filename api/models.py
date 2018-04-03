@@ -59,4 +59,6 @@ class Tag(models.Model):
 
 class Post(models.Model):
     content = models.CharField(max_length=280)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    tag = models.ManyToManyField(Tag)
+    author = models.ForeignKey(Student, on_delete=None)
+    subject = models.ForeignKey(Subject, null=True, blank=True, on_delete=models.CASCADE)
