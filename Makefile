@@ -79,3 +79,7 @@ compilemessages:
 staticfiles: manage.py
 	# Collect all static files
 	sudo docker exec ${container} python3 manage.py collectstatic
+
+# TEST
+test:
+	sudo docker exec ${container} python3 manage.py test
