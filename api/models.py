@@ -11,6 +11,8 @@ class Course(models.Model):
         return self.name
 
 
+
+
 class Subject(models.Model):
     name = models.CharField(max_length=200)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -57,8 +59,17 @@ class Tag(models.Model):
         return self.description
 
 
+class Emotion(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
     content = models.CharField(max_length=280)
-    tag = models.ManyToManyField(Tag)
+    tag = models.ManyToManyField(Tag, blank=True)
     author = models.ForeignKey(Student, on_delete=None)
     subject = models.ForeignKey(Subject, null=True, blank=True, on_delete=models.CASCADE)
+    emotion = models.ForeignKey(Emotion, on_delete=models.DO_NOTHING)
+

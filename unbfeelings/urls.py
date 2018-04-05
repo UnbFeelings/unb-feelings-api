@@ -1,5 +1,5 @@
 from api.views import (
-    CourseViewSet, PostViewSet, StudentViewSet, SubjectViewSet, TagViewSet
+    CourseViewSet, PostViewSet, StudentViewSet, SubjectViewSet, TagViewSet, EmotionViewSet
 )
 
 from django.conf.urls import include, url
@@ -20,6 +20,7 @@ ROUTER.register(r'subjects', SubjectViewSet, base_name='subjects')
 ROUTER.register(r'users', StudentViewSet)
 ROUTER.register(r'tags', TagViewSet, base_name='tags')
 ROUTER.register(r'posts', PostViewSet, base_name='posts')
+ROUTER.register(r'emotions', EmotionViewSet, base_name='emotions')
 
 urlpatterns = [
     url(r'^$', schema_view),

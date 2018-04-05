@@ -2,14 +2,14 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 
 from .models import (
-    Course, Post, Student, Subject, Tag
+    Course, Post, Student, Subject, Tag, Emotion
 )
 from .permissions import (
     AdminItemPermissions, StudentPermissions
 )
 from .serializers import (
     CourseSerializer, PostSerializer, StudentSerializer, SubjectSerializer,
-    TagSerializer
+    TagSerializer, EmotionSerializer
 )
 
 
@@ -144,7 +144,6 @@ class CourseViewSet(ModelViewSet):
       response = \
           super(CourseViewSet, self).update(request, pk, **kwargs)
       return response
-    permission_classes = (AdminItemPermissions,)
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
@@ -279,7 +278,6 @@ class SubjectViewSet(ModelViewSet):
         response = super(SubjectViewSet, self).update(request, pk, **kwargs)
         return response
 
-    permission_classes = (AdminItemPermissions,)
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
 
@@ -289,7 +287,6 @@ class StudentViewSet(ModelViewSet):
 
     API endpoint that allows users to be viewed, created, deleted or edited.
     """
-    permission_classes = (StudentPermissions,)
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
@@ -570,7 +567,6 @@ class TagViewSet(ModelViewSet):
         return response
 
 
-    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
@@ -734,6 +730,132 @@ class PostViewSet(ModelViewSet):
         response = super(PostViewSet, self).update(request, pk, **kwargs)
         return response
 
-    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+class EmotionViewSet(ModelViewSet):
+    """Description: EmotionViewSet.
+
+    API endpoint that allows emotions to be viewed, created, deleted or edited.
+    """
+    def list(self, request):
+      """
+      API endpoint that allows all courses to be viewed.
+      ---
+      Response example:
+      ```
+      {
+        "count": 4,
+        "next": null,
+        "previous": null,
+        "results": [
+          {
+            "id": 1,
+            "name": "Miserável"
+          },
+          {
+            "id": 2,
+            "name": "Infeliz"
+          },
+          {
+            "id": 3,
+            "name": "Triste"
+          },
+          {
+            "id": 4,
+            "name": "Amargurado"
+          }
+        ]
+      }
+      ```
+      """
+      return super(EmotionViewSet, self).list(request)
+    
+    def create(self, request):
+      """
+      API endpoint that allows all emotions to be created.
+      ---
+      Body example:
+      ```
+      {
+        "name": "Deprimido",
+      }
+      ```
+      Response example:
+      ```
+      {
+        "id": 1,
+        "name": "Deprimido"
+      }
+      ```
+      """
+      return super(EmotionViewSet, self).create(request)
+
+    def destroy(self, request, pk=None):
+        """
+        API endpoint that allows emotions to be deleted.
+        """
+        response = super(EmotionViewSet, self).destroy(request, pk)
+        return response
+
+    def retrieve(self, request, pk=None):
+        """
+        API endpoint that allows a specific emotions to be viewed.
+        ---
+        Response example:
+        ```
+        {
+          "id": 7,
+          "name": "Depressivo"
+        }
+        ```
+        """
+        response = super(EmotionViewSet, self).retrieve(request, pk)
+        return response
+    
+    def partial_update(self, request, pk=None, **kwargs):
+      """
+      API endpoint that allows a emotions to be partial edited.
+      ---
+      Body example:
+      ```
+      {
+        "name": "Abalado"
+      }
+      ```
+      Response example:
+      ```
+      {
+        "id": 7,
+        "name": "Abalado"
+      }
+      ```
+      """
+      response = \
+          super(EmotionViewSet, self).partial_update(request, pk, **kwargs)
+      return response
+
+    def update(self, request, pk=None, **kwargs):
+      """
+      API endpoint that allows a emotions to be edited.
+      ---
+      Body example:
+      ```
+      {
+        "name": "Desanimado"
+      }
+      ```
+      Response example:
+      ```
+      {
+        "id": 7,
+        "name": "Desanimado"
+      }
+      ```
+      """
+      response = \
+          super(EmotionViewSet, self).update(request, pk, **kwargs)
+      return response
+    queryset = Emotion.objects.all()
+    serializer_class = EmotionSerializer
+
