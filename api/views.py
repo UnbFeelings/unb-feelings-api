@@ -240,9 +240,7 @@ class SubjectViewSet(ModelViewSet):
         Body example:
         ```
         {
-            "id": 1,
-            "name": "CÁLCULO 1",
-            "course": 1
+            "name": "CÁLCULO 5",
         }
         ```
         Response example:
@@ -265,9 +263,8 @@ class SubjectViewSet(ModelViewSet):
         Body example:
         ```
         {
-            "id": 1,
-            "name": "CÁLCULO 5",
-            "course": 1
+            "name": "CÁLCULO 6",
+            "course": 2
         }
         ```
         Response example:
@@ -451,17 +448,292 @@ class StudentViewSet(ModelViewSet):
 
 
 class TagViewSet(ModelViewSet):
-    #permission_classes = (IsAuthenticatedOrReadOnly,)
+    """Description: TagViewSet.
+
+    API endpoint that allows tags to be viewed, created, deleted or edited.
+    """
+    
+    def list(self, request):
+      """
+      API endpoint that allows all tags to be viewed.
+      ---
+      Response example:
+      ```
+      {
+          "count": 1,
+          "next": null,
+          "previous": null,
+          "results": [
+              {
+                  "id": 1,
+                  "description": "TAG1",
+                  "quantity": 1
+              }
+          ]
+      }
+      ```
+      """
+      response = super(TagViewSet, self).list(request)
+      return response
+
+    def create(self, request):
+        """
+        API endpoint that allows tags to be created.
+        ---
+        Body example:
+        ```
+        {
+          "description": "educacao",
+        }
+        ```
+        Response example:
+        ```
+        {
+            "id": 2,
+            "description": "educacao",
+            "quantity": 0
+        }
+        ```
+        """
+        response = super(TagViewSet, self).create(request)
+        return response
+
+    def destroy(self, request, pk=None):
+        """
+        API endpoint that allows tags to be deleted.
+        """
+        response = super(TagViewSet, self).destroy(request, pk)
+        return response
+
+    def retrieve(self, request, pk=None):
+        """
+        API endpoint that allows a specific tag to be viewed.
+        ---
+        Response example:
+        ```
+        {
+            "id": 1,
+            "description": "TAG1",
+            "quantity": 1
+        }
+        ```
+        """
+        response = super(TagViewSet, self).retrieve(request, pk)
+        return response
+
+    def partial_update(self, request, pk=None, **kwargs):
+        """
+        API endpoint that allows a tag to be partial edited.
+        ---
+        Body example:
+        ```
+        {
+            "id": 1,
+            "description": "TAG1",
+            "quantity": 1
+        }
+        ```
+        Response example:
+        ```
+        {
+            "id": 1,
+            "description": "TAG1",
+            "quantity": 2
+        }
+        ```
+        """
+        response = \
+            super(TagViewSet, self).partial_update(request, pk, **kwargs)
+        return response
+    
+    def update(self, request, pk=None, **kwargs):
+        """
+        API endpoint that allows a tag to be edited.
+        ---
+        Body example:
+        ```
+        {
+            "description": "TAG2",
+            "quantity": 2
+        }
+        ```
+        Response example:
+        ```
+        {
+            "id": 1,
+            "description": "TAG2",
+            "quantity": 2
+        }
+        ```
+        """
+        response = super(TagViewSet, self).update(request, pk, **kwargs)
+        return response
+
+
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
 class PostViewSet(ModelViewSet):
-    """Description: CourseViewSet.
+    """Description: PostViewSet.
 
-    API endpoint that allows courses to be viewed, created, deleted or edited.
+    API endpoint that allows posts to be viewed, created, deleted or edited.
     """
 
-    #permission_classes = (IsAuthenticatedOrReadOnly,)
+    def list(self, request):
+      """
+      API endpoint that allows all posts to be viewed.
+      ---
+      Response example:
+      ```
+      {
+          "count": 1,
+          "next": null,
+          "previous": null,
+          "results": [
+              {
+                  "id": 1,
+                  "author": 1,
+                  "content": "asdfasd",
+                  "subject": 15,
+                  "tag": [
+                      1
+                  ]
+              }
+          ]
+      }
+      ```
+      """
+      response = super(PostViewSet, self).list(request)
+      return response
+
+    def create(self, request):
+        """
+        API endpoint that allows posts to be created.
+        ---
+        Body example:
+        ```
+        {
+            "author": pedro_1195@hotmail.com,
+            "content": "Quero morrer",
+            "subject": COMBUSTIVEIS E BIOCOMBUSTIVEIS,
+            "tag": [
+                TAG1,
+                educacao
+            ]
+        }
+        ```
+        Response example:
+        ```
+        {
+            "id": 2,
+            "author": 1,
+            "content": "Quero morrer",
+            "subject": 11,
+            "tag": [
+                1,
+                2
+            ]
+        }
+        ```
+        """
+        response = super(PostViewSet, self).create(request)
+        return response
+
+    def destroy(self, request, pk=None):
+        """
+        API endpoint that allows posts to be deleted.
+        """
+        response = super(PostViewSet, self).destroy(request, pk)
+        return response
+
+    def retrieve(self, request, pk=None):
+        """
+        API endpoint that allows a specific post to be viewed.
+        ---
+        Response example:
+        ```
+        {
+            "id": 1,
+            "author": 1,
+            "content": "asdfasd",
+            "subject": 15,
+            "tag": [
+                1
+            ]
+        }
+        ```
+        """
+        response = super(PostViewSet, self).retrieve(request, pk)
+        return response
+
+    def partial_update(self, request, pk=None, **kwargs):
+        """
+        API endpoint that allows a post to be partial edited.
+        ---
+        Body example:
+        ```
+        {
+            "content": "Melhor aula do mundo",
+        }
+        ```
+        Response example:
+        ```
+        {
+        {
+            "id": 1,
+            "author": 1,
+            "content": "Melhor aula do mundo",
+            "subject": 15,
+            "tag": [
+                1
+            ]
+        }
+        }
+        ```
+        """
+        response = \
+            super(PostViewSet, self).partial_update(request, pk, **kwargs)
+        return response
+    
+    def update(self, request, pk=None, **kwargs):
+        """
+        API endpoint that allows a post to be edited.
+        ---
+        Body example:
+        ```
+        {
+          {
+              "author": hpedro1195@gmail.com,
+              "content": "Pior aula do mundo",
+              "subject": 15,
+              "tag": [
+                TAG1,
+                educacao
+              ]
+          }
+        }
+        ```
+        Response example:
+        ```
+        {
+          {
+              "id": 1,
+              "author": hpedro1195@gmail.com,
+              "content": "Pior aula do mundo",
+              "subject": 15,
+              "tag": [
+                1,
+                2
+              ]
+          }
+        }
+        ```
+        """
+        response = super(PostViewSet, self).update(request, pk, **kwargs)
+        return response
+
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Post.objects.all()
     serializer_class = PostSerializer
