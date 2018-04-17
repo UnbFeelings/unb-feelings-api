@@ -501,12 +501,27 @@ class TagViewSet(ModelViewSet):
         ```
         """
         serializer = TagSerializer(data=request.data)
+
+        id = -1
+        try:
+            # trying to find the object on database
+            obj = Tag.objects.get(description=request.data['description'])
+            id = obj.pk
+        except Tag.DoesNotExist:
+            pass
+
         if serializer.is_valid():
             instance, created = serializer.get_or_create()
             if not created:
                 serializer.update(instance, serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if id != -1:
+            # if tag exists, we need to pass its id
+            return Response([{'id_tag': id}, serializer.errors], status=status.HTTP_400_BAD_REQUEST)
+        else:
+            # any error from validation will enter here
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         """
