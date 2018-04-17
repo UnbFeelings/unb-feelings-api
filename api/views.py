@@ -504,11 +504,11 @@ class TagViewSet(ModelViewSet):
         """
         serializer = TagSerializer(data=request.data)
 
-        id = -1
+        tag_retrieved = -1
         try:
             # trying to find the object on database
             obj = Tag.objects.get(description=request.data['description'])
-            id = obj.pk
+            tag_retrieved = obj
         except Tag.DoesNotExist:
             pass
 
@@ -518,9 +518,14 @@ class TagViewSet(ModelViewSet):
                 serializer.update(instance, serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-        if id != -1:
+        if tag_retrieved != -1:
             # if tag exists, we need to pass its id
-            return Response({'id_tag': id}, status=status.HTTP_202_ACCEPTED)
+            tag_data = {
+                'id': tag_retrieved.pk,
+                'description': tag_retrieved.description,
+                'quantity': tag_retrieved.quantity
+            }
+            return Response(tag_data, status=status.HTTP_202_ACCEPTED)
         else:
             # any error from validation will enter here
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
