@@ -3,6 +3,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
+from rest_framework_jwt.views import ObtainJSONWebToken
+
 from .models import (
     Campus, Course, Post, Student, Subject, Tag, Emotion
 )
@@ -871,3 +873,15 @@ class EmotionViewSet(ModelViewSet):
       return response
     queryset = Emotion.objects.all()
     serializer_class = EmotionSerializer
+
+
+class CustomObtainJWTToken(ObtainJSONWebToken):
+
+    def post(self, request, *args, **kwargs):
+        response = \
+            super(CustomObtainJWTToken, self).post(request, *args, **kwargs)
+
+        user = Student.objects.get(email=request.data['email'])
+        response.data['user'] = user.pk
+
+        return response

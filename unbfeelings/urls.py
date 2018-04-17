@@ -1,6 +1,6 @@
 from api.views import (
-    CampusViewSet, CourseViewSet, PostViewSet, StudentViewSet, SubjectViewSet,
-    TagViewSet, EmotionViewSet
+    CampusViewSet, CourseViewSet, CustomObtainJWTToken, PostViewSet,
+    StudentViewSet, SubjectViewSet, TagViewSet, EmotionViewSet
 )
 
 from django.conf.urls import include, url
@@ -27,6 +27,6 @@ ROUTER.register(r'campus', CampusViewSet, base_name='campus')
 urlpatterns = [
     url(r'^$', schema_view),
     url(r'^api/', include(ROUTER.urls)),
-    url(r'^api/token-auth/', obtain_jwt_token),
+    url(r'^api/token-auth/', CustomObtainJWTToken.as_view()),
     url(r'^api/token-refresh/', refresh_jwt_token),
 ]
