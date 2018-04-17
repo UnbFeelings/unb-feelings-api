@@ -1,5 +1,7 @@
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
 
 from .models import (
     Campus, Course, Post, Student, Subject, Tag, Emotion
@@ -464,7 +466,7 @@ class TagViewSet(ModelViewSet):
       ```
       {
           "count": 1,
-          "next": null,
+          "next": null,Tag
           "previous": null,
           "results": [
               {
@@ -498,8 +500,13 @@ class TagViewSet(ModelViewSet):
         }
         ```
         """
-        response = super(TagViewSet, self).create(request)
-        return response
+        serializer = TagSerializer(data=request.data)
+        if serializer.is_valid():
+            instance, created = serializer.get_or_create()
+            if not created:
+                serializer.update(instance, serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         """

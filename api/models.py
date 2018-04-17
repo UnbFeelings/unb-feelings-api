@@ -58,7 +58,7 @@ class Student(AbstractUser):
 
 
 class Tag(models.Model):
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, unique=True)
     _quantity = models.IntegerField(default=0, null=True, blank=True)
 
     @property
@@ -81,4 +81,4 @@ class Post(models.Model):
     tag = models.ManyToManyField(Tag, blank=True)
     author = models.ForeignKey(Student, on_delete=None)
     subject = models.ForeignKey(Subject, null=True, blank=True, on_delete=models.CASCADE)
-    emotion = models.ForeignKey(Emotion, on_delete=models.DO_NOTHING)
+    emotion = models.ManyToManyField(Emotion)

@@ -81,6 +81,11 @@ class TagSerializer(serializers.ModelSerializer):
             'quantity',
         ]
 
+    def get_or_create(self):
+        defaults = self.validated_data.copy()
+        identifier = defaults.pop('description')
+        return Tag.objects.get_or_create(description=identifier, defaults=defaults)
+
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
