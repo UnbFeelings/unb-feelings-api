@@ -33,6 +33,8 @@ class EmotionSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
+            'emotion_type',
+            'image_link',
         ]
 
 

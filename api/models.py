@@ -70,7 +70,14 @@ class Tag(models.Model):
 
 
 class Emotion(models.Model):
+    CHOICES = (
+        ('b', 'Bad'),
+        ('g', 'Good'),
+    )
+
+    emotion_type = models.CharField(max_length=1, choices=CHOICES)
     name = models.CharField(max_length=100)
+    image_link = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -82,3 +89,4 @@ class Post(models.Model):
     author = models.ForeignKey(Student, on_delete=None)
     subject = models.ForeignKey(Subject, null=True, blank=True, on_delete=models.CASCADE)
     emotion = models.ForeignKey(Emotion, on_delete=models.DO_NOTHING)
+
