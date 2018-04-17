@@ -70,7 +70,14 @@ class Tag(models.Model):
 
 
 class Emotion(models.Model):
+    CHOICES = (
+        ('b', 'Bad'),
+        ('g', 'Good'),
+    )
+
+    emotion_type = models.CharField(max_length=1, choices=CHOICES)
     name = models.CharField(max_length=100)
+    image_link = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
