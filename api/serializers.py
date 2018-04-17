@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import (
-    Course, Post, Student, Subject, Tag, Emotion
+    Campus, Course, Post, Student, Subject, Tag, Emotion
 )
 
 
@@ -11,8 +11,21 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
+            'campus',
         ]
-        
+
+
+class CampusSerializer(serializers.ModelSerializer):
+    courses = CourseSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Campus
+        fields = [
+            'id',
+            'name',
+            'courses',
+        ]
+
 
 class EmotionSerializer(serializers.ModelSerializer):
     class Meta:

@@ -4,13 +4,23 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class Course(models.Model):
+class Campus(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
 
+class Course(models.Model):
+    name = models.CharField(max_length=100)
+    campus = models.ForeignKey(
+        Campus,
+        on_delete=models.CASCADE,
+        related_name='courses'
+    )
+
+    def __str__(self):
+        return self.name
 
 
 class Subject(models.Model):
@@ -72,4 +82,3 @@ class Post(models.Model):
     author = models.ForeignKey(Student, on_delete=None)
     subject = models.ForeignKey(Subject, null=True, blank=True, on_delete=models.CASCADE)
     emotion = models.ForeignKey(Emotion, on_delete=models.DO_NOTHING)
-

@@ -2,15 +2,20 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 
 from .models import (
-    Course, Post, Student, Subject, Tag, Emotion
+    Campus, Course, Post, Student, Subject, Tag, Emotion
 )
 from .permissions import (
     AdminItemPermissions, StudentPermissions
 )
 from .serializers import (
-    CourseSerializer, PostSerializer, StudentSerializer, SubjectSerializer,
-    TagSerializer, EmotionSerializer
+    CampusSerializer, CourseSerializer, PostSerializer, StudentSerializer,
+    SubjectSerializer, TagSerializer, EmotionSerializer
 )
+
+
+class CampusViewSet(ModelViewSet):
+    queryset = Campus.objects.all()
+    serializer_class = CampusSerializer
 
 
 class CourseViewSet(ModelViewSet):
@@ -58,7 +63,7 @@ class CourseViewSet(ModelViewSet):
       ```
       """
       return super(CourseViewSet, self).list(request)
-    
+
     def create(self, request):
       """
       API endpoint that allows all courses to be created.
@@ -100,7 +105,7 @@ class CourseViewSet(ModelViewSet):
         """
         response = super(CourseViewSet, self).retrieve(request, pk)
         return response
-    
+
     def partial_update(self, request, pk=None, **kwargs):
       """
       API endpoint that allows a course to be partial edited.
@@ -153,7 +158,7 @@ class SubjectViewSet(ModelViewSet):
 
     API endpoint that allows subjects to be viewed, created, deleted or edited.
     """
-    
+
     def list(self, request):
       """
       API endpoint that allows all subjects to be viewed.
@@ -208,14 +213,14 @@ class SubjectViewSet(ModelViewSet):
         """
         response = super(SubjectViewSet, self).create(request)
         return response
-        
+
     def destroy(self, request, pk=None):
         """
         API endpoint that allows subjects to be deleted.
         """
         response = super(SubjectViewSet, self).destroy(request, pk)
         return response
-    
+
     def retrieve(self, request, pk=None):
         """
         API endpoint that allows a specific subject to be viewed.
@@ -254,7 +259,7 @@ class SubjectViewSet(ModelViewSet):
         response = \
             super(SubjectViewSet, self).partial_update(request, pk, **kwargs)
         return response
-    
+
     def update(self, request, pk=None, **kwargs):
         """
         API endpoint that allows a subject to be edited.
@@ -289,6 +294,7 @@ class StudentViewSet(ModelViewSet):
     """
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    permission_classes = (StudentPermissions,)
 
     def list(self, request):
         """
@@ -449,7 +455,7 @@ class TagViewSet(ModelViewSet):
 
     API endpoint that allows tags to be viewed, created, deleted or edited.
     """
-    
+
     def list(self, request):
       """
       API endpoint that allows all tags to be viewed.
@@ -542,7 +548,7 @@ class TagViewSet(ModelViewSet):
         response = \
             super(TagViewSet, self).partial_update(request, pk, **kwargs)
         return response
-    
+
     def update(self, request, pk=None, **kwargs):
         """
         API endpoint that allows a tag to be edited.
@@ -692,7 +698,7 @@ class PostViewSet(ModelViewSet):
         response = \
             super(PostViewSet, self).partial_update(request, pk, **kwargs)
         return response
-    
+
     def update(self, request, pk=None, **kwargs):
         """
         API endpoint that allows a post to be edited.
@@ -770,7 +776,7 @@ class EmotionViewSet(ModelViewSet):
       ```
       """
       return super(EmotionViewSet, self).list(request)
-    
+
     def create(self, request):
       """
       API endpoint that allows all emotions to be created.
@@ -812,7 +818,7 @@ class EmotionViewSet(ModelViewSet):
         """
         response = super(EmotionViewSet, self).retrieve(request, pk)
         return response
-    
+
     def partial_update(self, request, pk=None, **kwargs):
       """
       API endpoint that allows a emotions to be partial edited.
@@ -858,4 +864,3 @@ class EmotionViewSet(ModelViewSet):
       return response
     queryset = Emotion.objects.all()
     serializer_class = EmotionSerializer
-
