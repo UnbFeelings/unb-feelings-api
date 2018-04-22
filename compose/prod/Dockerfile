@@ -16,14 +16,16 @@ RUN apt-get update && apt-get install -y \
 # Install pip dependecies
 RUN pip3 install --upgrade pip
 
-# Crate user developer
-RUN useradd -ms /bin/bash developer
+# Insert Enviroment variable
+ENV MODE_ENVIROMENT=production
 
 # Create software folder
-RUN mkdir /home/developer/software
-WORKDIR /home/developer/software
-ADD . /home/developer/software
+ADD . /software
+WORKDIR /software
 RUN pip3 install -r requirements.txt
 
-# Config user developer
-USER developer
+# Run the dev script before and after any command
+ENTRYPOINT ["./prod.sh"]
+
+# Run the server
+CMD ["gunicorn", "--bind 0.0.0.0:8000", "unbfeelings.wsgi"]

@@ -30,9 +30,4 @@ python3 manage.py makemigrations
 python3 manage.py migrate
 
 echo "Collect staticfiles"
-mkdir unbfeelings/staticfiles
-chown -R developer unbfeelings/staticfiles
 python3 manage.py collectstatic --noinput
-
-echo "Run production server"
-gunicorn --bind 0.0.0.0:8000 unbfeelings.wsgi
