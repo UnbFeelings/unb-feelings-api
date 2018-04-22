@@ -1,0 +1,12 @@
+version: '3'
+services:
+  unbfeelings-dev:
+    build:
+      context: ../../
+      dockerfile: ./compose/dev/Dockerfile
+    volumes:
+      - ../../:/software
+    ports:
+      - "8000:8000"
+    image: unbfeelings-dev
+    container_name: unbfeelings-dev
