@@ -10,7 +10,3 @@ find . -path "ferramenta_custos/static/*"  -delete
 echo "Creating migrations and insert into psql database"
 python3 manage.py makemigrations
 python3 manage.py migrate
-
-echo "Run tests"
-# python3 manage.py test **/tests/
-python3 manage.py test
