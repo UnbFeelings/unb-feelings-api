@@ -14,19 +14,23 @@ RUN apt-get update && apt-get install -y \
 # Install pip dependecies
 RUN pip3 install --upgrade pip
 
+# Crate user developer
+RUN useradd -ms /bin/bash developer
+
 # Insert Enviroment variable
 ENV MODE_ENVIROMENT=development
 
 # Create software folder
-ADD . /software
-WORKDIR /software
+ADD . /home/developer/software
+WORKDIR /home/developer/software
 RUN pip3 install -r requirements.txt
 
 # Expose port 8000
 EXPOSE 8000
 
-# Run the dev script before and after any command
-ENTRYPOINT ["./dev.sh"]
+# Config user developer
+RUN chown -R developer: /home/developer/software
+USER developer
 
 # Run the server
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]

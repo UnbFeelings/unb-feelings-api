@@ -7,6 +7,11 @@ find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
 echo "Deleting staticfiles"
 find . -path "ferramenta_custos/static/*"  -delete
 
+ls -la
+
 echo "Creating migrations and insert into psql database"
 python3 manage.py makemigrations
 python3 manage.py migrate
+
+echo "Run the developer server"
+python3 manage.py runserver 0.0.0.0:8000
