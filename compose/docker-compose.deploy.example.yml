@@ -11,6 +11,7 @@ services:
     restart: unless-stopped
     depends_on:
       - unbfeelings-prod
+      - unbfeelings-front
 
   # Production enviroment
   unbfeelings-prod:
@@ -22,4 +23,9 @@ services:
   # Postgresql database
   db:
     image: postgres
+    restart: unless-stopped
+
+  # Frontend production enviroment
+  unbfeelings-front:
+    image: unbfeelings/front:latest
     restart: unless-stopped
