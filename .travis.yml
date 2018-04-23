@@ -1,8 +1,11 @@
 sudo: required
+language: python
+python:
+  - "3.6"
 
 services:
   - docker
-  
+
 branches:
   only:
     - master
@@ -12,10 +15,23 @@ env:
   - DOCKER_COMPOSE_VERSION=1.17.1
 
 before_install:
+  - sudo apt-get update
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 
 script:
-  - docker-compose -f docker-compose-test.yml up
+  - docker-compose -f docker-compose.test.yml up
+
+deploy:
+  # deploy to staging enviroment
+  - provider: script
+    script: bash staging-deploy.sh
+    on:
+      branch: develop
+  # deploy to production enviroment
+  - provider: script
+    script: bash production-deploy.sh
+    on:
+      branch: master
