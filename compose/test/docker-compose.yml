@@ -1,8 +1,8 @@
 version: '3'
 services:
   unbfeelings-test:
-    build:
-      context: ../../
-      dockerfile: ./compose/test/Dockerfile
     image: unbfeelings-test
+    build:
+      context: .
+      dockerfile: ./compose/test/Dockerfile
     container_name: unbfeelings-test

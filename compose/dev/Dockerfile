@@ -32,5 +32,9 @@ EXPOSE 8000
 RUN chown -R developer: /home/developer/software
 USER developer
 
+# Run the script to create database
+RUN chmod +x compose/dev/dev.sh
+ENTRYPOINT ["compose/dev/dev.sh"]
+
 # Run the server
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
