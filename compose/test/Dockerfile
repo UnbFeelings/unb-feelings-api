@@ -23,7 +23,8 @@ WORKDIR /software
 RUN pip3 install -r requirements.txt
 
 # Run the dev script before and after any command
-ENTRYPOINT ["./test.sh"]
+RUN chmod +x compose/test/test.sh
+ENTRYPOINT ["compose/test/test.sh"]
 
 # Run the server
 CMD ["python3", "manage.py", "test"]
