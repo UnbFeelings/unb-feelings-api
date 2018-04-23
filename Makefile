@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # DOCKER -------------------------------------------------------
-file := "compose/dev/docker-compose.yml"
+file := "docker-compose.yml"
 
 up:
 # Create the image and container
-ifeq (${file}, "compose/dev/docker-compose.yml")
+ifeq (${file}, "docker-compose.yml")
 	sudo docker-compose -f ${file} up -d
 else
 	sudo docker-compose -f ${file} up
@@ -35,7 +35,7 @@ down:
 	# Stop and Remove containers
 	sudo docker-compose -f ${file} down
 
-container := "unbfeelings-dev"
+container := "unbfeelingsapi_unbfeelings-dev_1"
 bash:
 	# Get in the bash of container
 	sudo docker exec -it ${container} bash

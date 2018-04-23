@@ -7,7 +7,7 @@ services:
       - ./nginx/production.conf:/etc/nginx/conf.d/production.conf
       - ../unbfeelings/staticfiles:/usr/share/nginx/html
     ports:
-      - "8001:8000"
+      - "80:8000"
     restart: unless-stopped
     depends_on:
       - unbfeelings-prod
