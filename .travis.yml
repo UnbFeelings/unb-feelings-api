@@ -23,3 +23,15 @@ before_install:
 
 script:
   - docker-compose -f docker-compose.test.yml up
+
+deploy:
+  # deploy to staging enviroment
+  - provider: script
+    script: bash staging-deploy.sh
+    on:
+      branch: develop
+  # deploy to production enviroment
+  - provider: script
+    script: bash production-deploy.sh
+    on:
+      branch: master

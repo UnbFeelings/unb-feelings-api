@@ -24,8 +24,12 @@ ADD . /software
 WORKDIR /software
 RUN pip3 install -r requirements.txt
 
+# Expose the port 8000
+EXPOSE 8000
+
 # Run the dev script before and after any command
-ENTRYPOINT ["./prod.sh"]
+RUN chmod +x compose/prod/prod.sh
+ENTRYPOINT ["compose/prod/prod.sh"]
 
 # Run the server
 CMD ["gunicorn", "--bind 0.0.0.0:8000", "unbfeelings.wsgi"]

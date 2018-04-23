@@ -1,0 +1,25 @@
+version: '3'
+services:
+  # Server
+  nginx-prod:
+    image: nginx:latest
+    volumes:
+      - ./nginx/production.conf:/etc/nginx/conf.d/production.conf
+      - ../unbfeelings/staticfiles:/usr/share/nginx/html
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+    depends_on:
+      - unbfeelings-prod
+
+  # Production enviroment
+  unbfeelings-prod:
+    image: unbfeelings/api:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  # Postgresql database
+  db:
+    image: postgres
+    restart: unless-stopped
