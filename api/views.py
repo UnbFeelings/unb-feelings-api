@@ -516,7 +516,13 @@ class TagViewSet(ModelViewSet):
             instance, created = serializer.get_or_create()
             if not created:
                 serializer.update(instance, serializer.validated_data)
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+            tag_data = Tag.objects.get(description=request.data['description'])
+            tag_data = {
+                'id': tag_data.pk,
+                'description': tag_data.description,
+                'quantity': tag_data.quantity
+            }
+            return Response(tag_data, status=status.HTTP_202_ACCEPTED)
 
         if tag_retrieved != -1:
             # if tag exists, we need to pass its id
