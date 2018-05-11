@@ -9,9 +9,7 @@ RUN apt-get update && apt-get install -y \
     python3-setuptools \
     gettext \
     vim \
-    build-essential \
-    postgresql \
-    postgresql-contrib
+    build-essential
 
 # Install pip dependecies
 RUN pip3 install --upgrade pip
