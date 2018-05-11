@@ -37,4 +37,4 @@ RUN chmod +x compose/dev/dev.sh
 ENTRYPOINT ["compose/dev/dev.sh"]
 
 # Run the server
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["seleep", "infinity"]

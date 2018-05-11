@@ -3,5 +3,5 @@ services:
   unbfeelings-test:
     image: unbfeelings/unbfeelings:test
     build:
-      context: .
+      context: ../../
       dockerfile: ./compose/test/Dockerfile
