@@ -16,6 +16,7 @@ from .serializers import (
     SubjectSerializer, TagSerializer, EmotionSerializer
 )
 
+import random
 
 class CampusViewSet(ModelViewSet):
     queryset = Campus.objects.all()
@@ -452,6 +453,23 @@ class StudentViewSet(ModelViewSet):
         course_serializer = CourseSerializer(course)
         response.data['course'] = course_serializer.data
         return response
+
+    def anonymous_name(request):
+        """
+        API endpoint that allows a specific tag to be viewed.
+        ---
+        Response example:
+        ```
+        {
+        "id": 1,
+        "description": "TAG1",
+        "quantity": 1
+        }
+        ```
+        """
+        CITY_NAMES = ['Rio', 'Paris', 'Budapest', 'Stockholm']
+        anonymous_name = random.choice(CITY_NAMES)
+        return Response(anonymous_name, status=status.HTTP_200_OK)
 
 
 class TagViewSet(ModelViewSet):

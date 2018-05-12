@@ -29,4 +29,5 @@ urlpatterns = [
     url(r'^api/', include(ROUTER.urls)),
     url(r'^api/token-auth/', CustomObtainJWTToken.as_view()),
     url(r'^api/token-refresh/', refresh_jwt_token),
+    url(r'^api/anonymous-name/', StudentViewSet.anonymous_name),
 ]
