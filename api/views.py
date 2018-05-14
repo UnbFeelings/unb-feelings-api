@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from rest_framework_jwt.views import ObtainJSONWebToken
 
@@ -454,21 +455,22 @@ class StudentViewSet(ModelViewSet):
         response.data['course'] = course_serializer.data
         return response
 
+    @api_view(['GET'])
     def anonymous_name(request):
         """
-        API endpoint that allows a specific tag to be viewed.
+        API endpoint that allows getting an anonymous name to a student.
         ---
         Response example:
         ```
         {
-        "id": 1,
-        "description": "TAG1",
-        "quantity": 1
+            "anonymous_name": "Rio"
         }
         ```
         """
         CITY_NAMES = ['Rio', 'Paris', 'Budapest', 'Stockholm']
-        anonymous_name = random.choice(CITY_NAMES)
+        anonymous_name = {
+            'anonymoys_name': random.choice(CITY_NAMES)
+        }
         return Response(anonymous_name, status=status.HTTP_200_OK)
 
 
