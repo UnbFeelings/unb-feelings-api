@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 RUN pip3 install --upgrade pip
 
 # Insert Enviroment variable
-ENV MODE_ENVIROMENT=development
+#ENV MODE_ENVIROMENT=development
 
 # Create software folder
 ADD . /software
@@ -26,4 +26,4 @@ RUN pip3 install -r requirements.txt
 #ENTRYPOINT ["compose/test/test.sh"]
 
 # Run the server
-#CMD ["python3", "manage.py", "test"]
+# CMD ["python3", "manage.py", "test"]

@@ -107,11 +107,8 @@ ENV/
 mediafiles
 staticfiles
 
-# Migrations and DB
+# Dev DB
 db.sqlite3
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
 
 # VSCode
 .vscode/*
