@@ -18,6 +18,7 @@ from .serializers import (
 )
 
 import random
+import json
 
 class CampusViewSet(ModelViewSet):
     queryset = Campus.objects.all()
@@ -467,13 +468,14 @@ class StudentViewSet(ModelViewSet):
         }
         ```
         """
-        CITY_NAMES = ['Rio', 'Paris', 'Budapest', 'Stockholm']
+        # The city names are sorted in alphabetic order
+        CITY_NAMES = json.loads(open("api/fixtures/city_names.json").read())
         anonymous_name = {
-            'anonymoys_name': random.choice(CITY_NAMES)
+            'anonymous_name': random.choice(CITY_NAMES)
         }
         return Response(anonymous_name, status=status.HTTP_200_OK)
 
-
+        
 class TagViewSet(ModelViewSet):
     """Description: TagViewSet.
 
