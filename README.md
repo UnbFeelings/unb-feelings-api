@@ -51,3 +51,5 @@ ao finalizar você pode acessar a aplicação utilizando a seguinde URL: ```0.0.
   - ```make compilemessages```: Gera as traduções especificadas no arquivo dentro da pasta locale de cada aplicação.
 
   - ```make staticfiles```: Gera uma pasta que irá englobar todos os arquivos estáticos da aplicação.
+
+  - ```make populate```: Popula as tabelas de curso e disciplinas.

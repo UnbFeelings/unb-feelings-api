@@ -22,7 +22,10 @@ from unbfeelings.config.i18n import (
     LANGUAGE_CODE, TIME_ZONE, USE_I18N, USE_L10N, USE_TZ
 )
 from unbfeelings.config.rest import (
-    REST_FRAMEWORK, JWT_AUTH
+    REST_FRAMEWORK, JWT_AUTH, SWAGGER_SETTINGS
+)
+from unbfeelings.config.authentication import (
+    AUTHENTICATION_BACKENDS, AUTH_USER_MODEL
 )
 from unbfeelings.config.middleware import MIDDLEWARE
 from unbfeelings.config.security import SECRET_KEY
