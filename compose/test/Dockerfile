@@ -17,13 +17,7 @@ RUN pip3 install --upgrade pip
 #ENV MODE_ENVIROMENT=development
 
 # Create software folder
+RUN mkdir -p /software
 ADD . /software
 WORKDIR /software
 RUN pip3 install -r requirements.txt
-
-# Run the dev script before and after any command
-#RUN chmod +x compose/test/test.sh
-#ENTRYPOINT ["compose/test/test.sh"]
-
-# Run the server
-# CMD ["python3", "manage.py", "test"]
