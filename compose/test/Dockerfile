@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     python3-setuptools \
     gettext \
-    vim \
     build-essential
 
 # Install pip dependecies
@@ -23,8 +22,8 @@ WORKDIR /software
 RUN pip3 install -r requirements.txt
 
 # Run the dev script before and after any command
-RUN chmod +x compose/test/test.sh
-ENTRYPOINT ["compose/test/test.sh"]
+#RUN chmod +x compose/test/test.sh
+#ENTRYPOINT ["compose/test/test.sh"]
 
 # Run the server
-CMD ["python3", "manage.py", "test"]
+#CMD ["python3", "manage.py", "test"]
