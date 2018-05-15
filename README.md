@@ -1,10 +1,15 @@
 # UnbFeelings_api
 
+[![Coverage Status](https://coveralls.io/repos/github/UnbFeelings/unb-feelings-api/badge.svg?branch=devops)](https://coveralls.io/github/UnbFeelings/unb-feelings-api?branch=devops)
+[![pipeline status](https://gitlab.com/UnbFeelings/unb-feelings-api/badges/master/pipeline.svg)](https://gitlab.com/UnbFeelings/unb-feelings-api/commits/master)
+
+***
+
 Para subir os ambientes do UnB Feelings API, primeiramente é necessário instalar o docker e o docker-compose em seu computador.
 
 ## Ambiente de Desenvolvimento
 
-* Para clonar o repositório execute o comando: 
+* Para clonar o repositório execute o comando:
 ```
 git clone git@github.com:ejplatform/ej-server.git
 ```
