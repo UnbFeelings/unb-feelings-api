@@ -9,6 +9,10 @@ from api.views import (
     PostViewSet, TagViewSet, CustomObtainJWTToken
 )
 
+from rest_framework_swagger.views import get_swagger_view
+
+from django.urls import path
+
 schema_view = get_swagger_view(title='UnB Feelings API')
 
 ROUTER = DefaultRouter()
@@ -25,4 +29,5 @@ urlpatterns = [
     url(r'^api/token-auth/', CustomObtainJWTToken.as_view()),
     url(r'^api/token-refresh/', refresh_jwt_token),
     url(r'^api/anonymous-name/', StudentViewSet.anonymous_name),
+    path('api/posts/subject/<int:pk>/', PostViewSet.post_by_subject),
 ]
