@@ -1,55 +1,71 @@
 # UnbFeelings_api
 
-## inicializando projeto para desenvolvimento
+[![Coverage Status](https://coveralls.io/repos/github/UnbFeelings/unb-feelings-api/badge.svg?branch=devops)](https://coveralls.io/github/UnbFeelings/unb-feelings-api?branch=devops)
+[![pipeline status](https://gitlab.com/UnbFeelings/unb-feelings-api/badges/master/pipeline.svg)](https://gitlab.com/UnbFeelings/unb-feelings-api/commits/master)
 
-* De um ```git clone <url-do-repositorio>```
+***
 
-* Instale o docker e o docker-compose em seu computador para usar com o sudo (administrador) - padrão
+Para subir os ambientes do UnB Feelings API, primeiramente é necessário instalar o docker e o docker-compose em seu computador.
 
-* Execute o comando ```make up``` para gerar a imagem do projeto e o container do ambiente de desenvolvimento,
-ao finalizar você pode acessar a aplicação utilizando a seguinde URL: ```0.0.0.0:8000```
+## Ambiente de Desenvolvimento
 
-* Assim que o ambiente tiver gerado crie um superusuário com os seguintes comandos:
+* Para clonar o repositório execute o comando:
+```bash
+git clone https://github.com/UnbFeelings/unb-feelings-api.git
+```
 
-  ```
-  make bash - Para entrar dentro do dontainer
-  python3 manage.py createsuperuser
-  ```
+* Para subir o ambiente basta fazer:
+```bash
+sudo docker-compose build
+sudo docker-compose run dev python manage.py migrate
+```
+* Esse primeiro passo só é necessário uma vez. Mas você precisará executar uma nova build sempre que um novo pacote pip for adicionado aos requirements.
+
+E para executar:
+```bash
+sudo docker-compose up
+```
+* Após executar o ultimo comando, o servidor estará rodando na url 0.0.0.0:8000.
+
+Lembrando que sempre que uma model for alterada, será necessário atualizar/criar a sua devida migração.
+```bash
+sudo docker-compose run dev python manage.py makemigrations
+```
+E realizar essa migração no banco:
+```bash
+sudo docker-compose run dev python manage.py migrate
+```
+
+* Para entrar no terminal do container utilize o seguinte comando
+```
+docker exec -it <nome_do_container> bash
+```
+
+* Com isso você estará dentro do terminal do container e poderá criar um super usuário via shell.
+O ```python manage.py createsuperuser``` não está funcionando
+devido ao usuário precisar de um curso, então para criar um usuário é necessário entrar via shell pegar(ou criar) um curso e usa-lo na criação do usuário.
 
 * Com isso você pode modificar os arquivos localmente em sua máquina que ele serão automaticamente modificados dentro do container, possibilitando assim ter um ambiente de desenvolvimento sem a necessidade de muita configuração do ambiente.
 
-* **Observação**: Os comandos (make up, start, logs, stop, rm, ps) são comandos para manipulação de containers e tem como parâmetro nomeado opcional o **file** que pode passar o compose que deseja utilizar, por padrão é utilizado o **docker-compose-dev.yml** para gerar o ambiente de desenvolvimento. O de deploy é o arquivo **docker-compose-prod.yml** e o de teste é o arquivo **docker-compose-test.yml**.
+## Ambiente de Testes
 
-* **Observação**: Os comandos relacionados ao django tem como parâmetro opcional o **container** de execução do mesmo.
+* Para rodar os testes, execute o seguinte comando para subir o ambiente de teste
+```
+sudo docker-compose run dev python manage.py test
+```
 
-* **Comandos de desenvolvimento**:
+Também é possível executar os testes pelo mesmo docker do CI:
+```bash
+sudo docker-compose -f compose/test/docker-compose.test.yml build
+sudo docker-compose -f compose/test/docker-compose.test.yml run unbfeelings-test python manage.py test
+```
 
-  - ```make logs```: Gera a log do servidor.
+Mas nesse caso, é mais fácil simplismente fazer um _push_ para a sua branch no github que logo o CI irá automaticamente executar os testes.
 
-  - ```make start```: Inicializa os containers.
+Agora caso queira ver a cobertura de testes:
+```bash
+sudo docker-compose run dev coverage run --source='.' manage.py test
+sudo docker-compose run dev coverage report
+```
 
-  - ```make stop```: Para a execução dos containers..
-
-  - ```make ps```: Para ver quais containers estão em execução.
-
-  - ```make rm```: Remove os containers.
-
-  - ```make app name=<nome-do-app>```: Cria uma aplicação django, o parâmetro nomeado **name** obrigatória.
-
-  - ```make bash```: Entra no terminal de comandos do container do ambiente de desenvolvimento.
-
-  - ```make run container=<container-de-execução> command=<comando-django>```: Executa um comando dentro do
-    container especificado, o parâmetro container é opcional e por padrão é o container de desenvolvimento
-    e o parâmetro **command** é obrigatório.
-
-  - ```make migrations```: Gera todas as migrações da aplicação.
-
-  - ```make migrate```: Executa as migrações no banco de dados.
-
-  - ```make messages```: Cria os arquivos de tradução dentro das aplicações django que tiverem a pasta locale criadas.
-
-  - ```make compilemessages```: Gera as traduções especificadas no arquivo dentro da pasta locale de cada aplicação.
-
-  - ```make staticfiles```: Gera uma pasta que irá englobar todos os arquivos estáticos da aplicação.
-
-  - ```make populate```: Popula as tabelas de curso e disciplinas.
+Caso queira uma analise mais detalhada da cobertura, basta olhar o submit da cobertura pelo CI para o _coveralls_, ou, em vez de ```coverage report``` executar ```coverage html``` e uma pasta de nome __htmlcov__ será criada com a cobertura em HTML.

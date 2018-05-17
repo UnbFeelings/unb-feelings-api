@@ -3,5 +3,9 @@ services:
   unbfeelings-test:
     image: unbfeelings/unbfeelings:test
     build:
-      context: .
+      context: ../../
       dockerfile: ./compose/test/Dockerfile
+    volumes:
+      - ../../:/software
+    environment:
+      - MODE_ENVIROMENT=development

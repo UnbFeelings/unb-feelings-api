@@ -3,6 +3,6 @@ services:
   # Production enviroment
   unbfeelings-prod:
     build:
-      context: .
+      context: ../../
       dockerfile: ./compose/prod/Dockerfile
     image: unbfeelings/api:latest

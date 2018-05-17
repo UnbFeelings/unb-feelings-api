@@ -8,23 +8,16 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     python3-setuptools \
     gettext \
-    vim \
     build-essential
 
 # Install pip dependecies
 RUN pip3 install --upgrade pip
 
 # Insert Enviroment variable
-ENV MODE_ENVIROMENT=development
+#ENV MODE_ENVIROMENT=development
 
 # Create software folder
+RUN mkdir -p /software
 ADD . /software
 WORKDIR /software
 RUN pip3 install -r requirements.txt
-
-# Run the dev script before and after any command
-RUN chmod +x compose/test/test.sh
-ENTRYPOINT ["compose/test/test.sh"]
-
-# Run the server
-CMD ["python3", "manage.py", "test"]
