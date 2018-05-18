@@ -1,6 +1,10 @@
-from api.views import (
-    CampusViewSet, CourseViewSet, CustomObtainJWTToken, PostViewSet,
+from api.view import (
+    CustomObtainJWTToken, PostViewSet,
     StudentViewSet, SubjectViewSet, TagViewSet, EmotionViewSet
+)
+
+from api.views.__init__ import (
+    CourseViewSet, CampusViewSet
 )
 
 from django.conf.urls import include, url
