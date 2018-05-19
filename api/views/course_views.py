@@ -2,6 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from api.serializers import CourseSerializer
 from api.models import Course
+from api.permissions import NonAdminCanOnlyGet
 
 
 class CourseViewSet(ModelViewSet):
@@ -11,6 +12,7 @@ class CourseViewSet(ModelViewSet):
     """
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    permission_classes = (NonAdminCanOnlyGet, )
 
     def list(self, request):
         """
