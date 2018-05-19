@@ -2,6 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from api.serializers import PostSerializer
 from api.models import Post
+from api.permissions import PostPermission
 
 
 class PostViewSet(ModelViewSet):
@@ -11,6 +12,7 @@ class PostViewSet(ModelViewSet):
     """
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = (PostPermission, )
 
     def list(self, request):
         """

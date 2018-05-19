@@ -4,12 +4,12 @@ from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth import get_user_model
 
 from api.models import Campus
-from api.tests.helpers import create_test_user
+from api.tests.helpers import create_test_user, AdminAccessCheckMixin
 
 UserModel = get_user_model()
 
 
-class CampusTestCase(APITestCase):
+class CampusTestCase(APITestCase, AdminAccessCheckMixin):
     def setUp(self):
         Campus.objects.get_or_create(name="FGA")
         Campus.objects.get_or_create(name="Darcy")
@@ -83,7 +83,7 @@ class CampusTestCase(APITestCase):
 
         client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(token))
         response = client.patch('/api/campus/{}/'.format(campus.id),
-                              {"name": "other name"})
+                                {"name": "other name"})
 
         self.assertEqual(200, response.status_code)
         self.assertEqual("other name", response.data['name'])
@@ -113,31 +113,3 @@ class CampusTestCase(APITestCase):
 
         self.assertEqual(None, response.data)
         self.assertEqual(0, len(Campus.objects.all().filter(name="FGA")))
-
-    def _get_user_token(self, email, password):
-        client = APIClient()
-
-        response = client.post("/api/token-auth/", {
-            'email': email,
-            'password': password
-        })
-
-        return response.data['token']
-
-    def _check_admin_only_access(self, client, client_action, user_email,
-                                 user_password):
-        response = client_action()
-
-        self.assertEqual(401, response.status_code)
-        self.assertEqual(
-            "As credenciais de autenticação não foram fornecidas.",
-            response.data['detail'])
-
-        token = self._get_user_token(user_email, user_password)
-
-        client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(token))
-        response = client_action()
-
-        self.assertEqual(403, response.status_code)
-        self.assertEqual("Você não tem permissão para executar essa ação.",
-                         response.data['detail'])

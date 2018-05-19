@@ -4,12 +4,12 @@ from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth import get_user_model
 
 from api.models import Campus, Course
-from api.tests.helpers import create_test_user
+from api.tests.helpers import create_test_user, AdminAccessCheckMixin
 
 UserModel = get_user_model()
 
 
-class CourseTestCase(APITestCase):
+class CourseTestCase(APITestCase, AdminAccessCheckMixin):
     def setUp(self):
         self.campus = Campus.objects.get_or_create(name="FGA")[0]
         Course.objects.get_or_create(name="ENGENHARIA", campus=self.campus)
@@ -121,31 +121,3 @@ class CourseTestCase(APITestCase):
         self.assertEqual(None, response.data)
         self.assertEqual(
             0, len(Course.objects.all().filter(name="ENG.SOFTWARE")))
-
-    def _get_user_token(self, email, password):
-        client = APIClient()
-
-        response = client.post("/api/token-auth/", {
-            'email': email,
-            'password': password
-        })
-
-        return response.data['token']
-
-    def _check_admin_only_access(self, client, client_action, user_email,
-                                 user_password):
-        response = client_action()
-
-        self.assertEqual(401, response.status_code)
-        self.assertEqual(
-            "As credenciais de autenticação não foram fornecidas.",
-            response.data['detail'])
-
-        token = self._get_user_token(user_email, user_password)
-
-        client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(token))
-        response = client_action()
-
-        self.assertEqual(403, response.status_code)
-        self.assertEqual("Você não tem permissão para executar essa ação.",
-                         response.data['detail'])

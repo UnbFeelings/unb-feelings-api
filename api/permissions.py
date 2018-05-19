@@ -68,17 +68,57 @@ class AdminItemPermissions(permissions.BasePermission):
 
 
 class NonAdminCanOnlyGet(permissions.BasePermission):
+    """
+    Non admin members can only use get requests
+    """
+
     def has_permission(self, request, view):
-        """
-        Return `True` if permission is granted, `False` otherwise.
-        """
+        return self._base_check(request)
+
+    def has_object_permission(self, request, view, obj):
+        return self._base_check(request)
+
+    def _base_check(self, request):
         if request.method == "GET":
             return True
         else:
             return request.user and request.user.is_staff
 
-    def has_object_permission(self, request, view, obj):
+
+class PostPermission(permissions.BasePermission):
+    """
+    Admins and the post owner can do all requests.
+    But others users(even anon users) only do GET requests
+    """
+
+    def has_permission(self, request, view):
+        """
+        Permissions for routes:
+            GET /posts/
+            POST /posts/
+        """
         if request.method == "GET":
             return True
-        else:
-            return request.user and request.user.is_staff
+
+        if not request.user:
+            return False
+
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, post):
+        """
+        Permissions for routes:
+            GET /posts/:id
+            PUT/PATCH /posts/:id
+            DELETE /posts/:id
+        """
+        if request.method == "GET":
+            return True
+
+        if not request.user:
+            return False
+
+        if request.user.is_staff:
+            return True
+
+        return post.author == request.user
