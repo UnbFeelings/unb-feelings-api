@@ -6,7 +6,7 @@ file := "docker-compose.yml"
 up:
 # Create the image and container
 ifeq (${file}, "docker-compose.yml")
-	sudo docker-compose -f ${file} up 
+	sudo docker-compose -f ${file} up  -d
 else
 	sudo docker-compose -f ${file} up
 endif

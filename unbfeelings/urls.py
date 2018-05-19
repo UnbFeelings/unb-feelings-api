@@ -1,21 +1,13 @@
-from api.view import (
-    CustomObtainJWTToken, PostViewSet,
-    StudentViewSet, SubjectViewSet, TagViewSet, EmotionViewSet
-)
-
-from api.views.__init__ import (
-    CourseViewSet, CampusViewSet
-)
-
 from django.conf.urls import include, url
 
 from rest_framework.routers import DefaultRouter
-
-from rest_framework_jwt.views import (
-    obtain_jwt_token, refresh_jwt_token
-)
-
+from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_swagger.views import get_swagger_view
+
+from api.views import (
+    CourseViewSet, CampusViewSet, SubjectViewSet, StudentViewSet,
+    PostViewSet, TagViewSet, EmotionViewSet, CustomObtainJWTToken
+)
 
 schema_view = get_swagger_view(title='UnB Feelings API')
 
