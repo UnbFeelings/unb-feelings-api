@@ -1,7 +1,11 @@
 # UnbFeelings_api
 
-[![Coverage Status](https://coveralls.io/repos/github/UnbFeelings/unb-feelings-api/badge.svg?branch=devops)](https://coveralls.io/github/UnbFeelings/unb-feelings-api?branch=devops)
-[![pipeline status](https://gitlab.com/UnbFeelings/unb-feelings-api/badges/master/pipeline.svg)](https://gitlab.com/UnbFeelings/unb-feelings-api/commits/master)
+| Verificação       | Badge         |
+| ------------------|:-------------:|
+| Testes Master     | [![pipeline status](https://gitlab.com/UnbFeelings/unb-feelings-api/badges/master/pipeline.svg)](https://gitlab.com/UnbFeelings/unb-feelings-api/commits/master) |
+| Testes Develop    | [![pipeline status](https://gitlab.com/UnbFeelings/unb-feelings-api/badges/develop/pipeline.svg)](https://gitlab.com/UnbFeelings/unb-feelings-api/commits/master) |
+| Cobertura Master  | [![Coverage Master Status](https://coveralls.io/repos/github/UnbFeelings/unb-feelings-api/badge.svg?branch=master)](https://coveralls.io/github/UnbFeelings/unb-feelings-api?branch=master) |
+| Cobertura Develop | [![Coverage Develop Status](https://coveralls.io/repos/github/UnbFeelings/unb-feelings-api/badge.svg?branch=develop)](https://coveralls.io/github/UnbFeelings/unb-feelings-api?branch=develop) |
 
 ***
 
