@@ -4,12 +4,12 @@ from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth import get_user_model
 
 from api.models import Campus, Course, Subject, Post, Emotion
-from api.tests.helpers import create_test_user, AdminAccessCheckMixin
+from api.tests.helpers import create_test_user, TestCheckMixin
 
 UserModel = get_user_model()
 
 
-class PostTestCase(APITestCase, AdminAccessCheckMixin):
+class PostTestCase(APITestCase, TestCheckMixin):
     @create_test_user(email="test@user.com", password="testuser")
     def setUp(self):
         campus = Campus.objects.get_or_create(name="FGA")[0]

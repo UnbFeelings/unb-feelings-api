@@ -24,7 +24,7 @@ def create_test_user(*, email: str, password: str):
     return my_decorator
 
 
-class AdminAccessCheckMixin():
+class TestCheckMixin():
     """
     Mixin class that adds:
         * a check to logged user only on routes

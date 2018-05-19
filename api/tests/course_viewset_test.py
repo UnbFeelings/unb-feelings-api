@@ -4,12 +4,12 @@ from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth import get_user_model
 
 from api.models import Campus, Course
-from api.tests.helpers import create_test_user, AdminAccessCheckMixin
+from api.tests.helpers import create_test_user, TestCheckMixin
 
 UserModel = get_user_model()
 
 
-class CourseTestCase(APITestCase, AdminAccessCheckMixin):
+class CourseTestCase(APITestCase, TestCheckMixin):
     def setUp(self):
         self.campus = Campus.objects.get_or_create(name="FGA")[0]
         Course.objects.get_or_create(name="ENGENHARIA", campus=self.campus)
