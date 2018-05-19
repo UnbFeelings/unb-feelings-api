@@ -2,6 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from api.serializers import SubjectSerializer
 from api.models import Subject
+from api.permissions import NonAdminCanOnlyGet
 
 
 class SubjectViewSet(ModelViewSet):
@@ -11,6 +12,7 @@ class SubjectViewSet(ModelViewSet):
     """
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
+    permission_classes = (NonAdminCanOnlyGet, )
 
     def list(self, request):
         """

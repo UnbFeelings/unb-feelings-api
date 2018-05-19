@@ -3,39 +3,41 @@
 from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth import get_user_model
 
-from api.models import Campus, Course
+from api.models import Campus, Course, Subject
 from api.tests.helpers import create_test_user
 
 UserModel = get_user_model()
 
 
-class CourseTestCase(APITestCase):
+class SubjectTestCase(APITestCase):
     def setUp(self):
-        self.campus = Campus.objects.get_or_create(name="FGA")[0]
-        Course.objects.get_or_create(name="ENGENHARIA", campus=self.campus)
-        Course.objects.get_or_create(name="ENG.SOFTWARE", campus=self.campus)
+        campus = Campus.objects.get_or_create(name="FGA")[0]
+        self.course = Course.objects.get_or_create(
+            name="ENGENHARIA", campus=campus)[0]
+        Subject.objects.get_or_create(name="Calculo 1", course=self.course)
+        Subject.objects.get_or_create(name="CB", course=self.course)
 
     def test_anyone_can_get_list(self):
         """
         Anyone can make get requests to list
         """
         client = APIClient()
-        response = client.get('/api/courses/')
-        courses = Course.objects.all()
+        response = client.get('/api/subjects/')
+        subjects = Subject.objects.all()
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(len(courses), len(response.data['results']))
+        self.assertEqual(len(subjects), len(response.data['results']))
 
     def test_anyone_can_get_detail(self):
         """
         Anyone can make get requests to detail
         """
         client = APIClient()
-        course = Course.objects.get(name="ENG.SOFTWARE")
-        response = client.get('/api/courses/{}/'.format(course.id))
+        subject = Subject.objects.get(name="CB")
+        response = client.get('/api/subjects/{}/'.format(subject.id))
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(course.id, response.data['id'])
+        self.assertEqual(subject.id, response.data['id'])
 
     @create_test_user(email="test@user.com", password="testuser")
     def test_only_admin_can_create(self):
@@ -46,8 +48,8 @@ class CourseTestCase(APITestCase):
 
         self._check_admin_only_access(
             client,
-            lambda: client.post('/api/courses/', {
-                    "name": "A new course", "campus": self.campus.id
+            lambda: client.post('/api/subjects/', {
+                    "name": "A new subject", "course": self.course.id
                 }),
             "test@user.com", "testuser")
 
@@ -58,25 +60,25 @@ class CourseTestCase(APITestCase):
         token = self._get_user_token("test@user.com", "testuser")
 
         client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(token))
-        response = client.post('/api/courses/', {
-            "name": "A new course",
-            "campus": self.campus.id
+        response = client.post('/api/subjects/', {
+            "name": "A new subject",
+            "course": self.course.id
         })
 
         self.assertEqual(201, response.status_code)
-        self.assertEqual("A new course", response.data['name'])
+        self.assertEqual("A new subject", response.data['name'])
 
     @create_test_user(email="test@user.com", password="testuser")
     def test_only_admin_can_update(self):
         """
         Only admin members can update
         """
-        course = Course.objects.get(name="ENG.SOFTWARE")
+        subject = Subject.objects.get(name="CB")
         client = APIClient()
 
         self._check_admin_only_access(
             client,
-            lambda: client.patch('/api/courses/{}/'.format(course.id), {
+            lambda: client.patch('/api/subjects/{}/'.format(subject.id), {
                         "name": "other name"
                     }),
             "test@user.com", "testuser")
@@ -88,7 +90,7 @@ class CourseTestCase(APITestCase):
         token = self._get_user_token("test@user.com", "testuser")
 
         client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(token))
-        response = client.patch('/api/courses/{}/'.format(course.id),
+        response = client.patch('/api/subjects/{}/'.format(subject.id),
                                 {"name": "other name"})
 
         self.assertEqual(200, response.status_code)
@@ -99,12 +101,12 @@ class CourseTestCase(APITestCase):
         """
         Only admin members can delete
         """
-        course = Course.objects.get(name="ENG.SOFTWARE")
+        subject = Subject.objects.get(name="CB")
         client = APIClient()
 
         self._check_admin_only_access(
             client,
-            lambda: client.delete('/api/courses/{}/'.format(course.id)),
+            lambda: client.delete('/api/subjects/{}/'.format(subject.id)),
             "test@user.com", "testuser")
 
         user = UserModel.objects.get(email="test@user.com")
@@ -114,13 +116,12 @@ class CourseTestCase(APITestCase):
         token = self._get_user_token("test@user.com", "testuser")
 
         client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(token))
-        response = client.delete('/api/courses/{}/'.format(course.id))
+        response = client.delete('/api/subjects/{}/'.format(subject.id))
 
         self.assertEqual(204, response.status_code)
 
         self.assertEqual(None, response.data)
-        self.assertEqual(
-            0, len(Course.objects.all().filter(name="ENG.SOFTWARE")))
+        self.assertEqual(0, len(Subject.objects.all().filter(name="CB")))
 
     def _get_user_token(self, email, password):
         client = APIClient()
