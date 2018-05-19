@@ -4,7 +4,6 @@ from rest_framework import permissions
 
 
 class DefaultPermission(permissions.IsAuthenticated):
-
     def has_permission(self, request, view):
         permission = super().has_permission(request, view)
 
@@ -18,7 +17,6 @@ class DefaultPermission(permissions.IsAuthenticated):
 
 
 class StudentPermissions(permissions.BasePermission):
-
     def __init__(self):
         self.permission = False
         self.request = None
@@ -36,8 +34,8 @@ class StudentPermissions(permissions.BasePermission):
             self.user_id = str(self.request.user.id)
             self.user_request_id = \
                 self.request.path.split('/users/')[1][:-1]
-            if (self.request.method == 'POST' and
-                    self.request.user.is_anonymous):
+            if (self.request.method == 'POST'
+                    and self.request.user.is_anonymous):
                 self.permission = True
 
             if self.user_id == self.user_request_id:
@@ -52,7 +50,6 @@ class StudentPermissions(permissions.BasePermission):
 
 
 class AdminItemPermissions(permissions.BasePermission):
-
     def __init__(self):
         self.permission = False
 
@@ -68,3 +65,20 @@ class AdminItemPermissions(permissions.BasePermission):
             self.permission = True
 
         return self.permission
+
+
+class NonAdminCanOnlyGet(permissions.BasePermission):
+    def has_permission(self, request, view):
+        """
+        Return `True` if permission is granted, `False` otherwise.
+        """
+        if request.method == "GET":
+            return True
+        else:
+            return request.user and request.user.is_staff
+
+    def has_object_permission(self, request, view, obj):
+        if request.method == "GET":
+            return True
+        else:
+            return request.user and request.user.is_staff
