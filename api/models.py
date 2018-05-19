@@ -76,11 +76,10 @@ class Emotion(models.Model):
     )
 
     emotion_type = models.CharField(max_length=1, choices=CHOICES)
-    name = models.CharField(max_length=100)
     image_link = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return str((self.emotion_type, self.get_emotion_type_display()))
 
 
 class Post(models.Model):

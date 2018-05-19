@@ -28,6 +28,8 @@ class CampusSerializer(serializers.ModelSerializer):
 
 
 class EmotionSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = Emotion
         fields = [
@@ -36,6 +38,9 @@ class EmotionSerializer(serializers.ModelSerializer):
             'emotion_type',
             'image_link',
         ]
+
+    def get_name(self, obj):
+        return obj.get_emotion_type_display()
 
 
 class SubjectSerializer(serializers.ModelSerializer):

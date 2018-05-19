@@ -39,4 +39,7 @@ Student.objects.create(username='AlunoDireito2', email='aluno_dir2@gmail.com', c
 Student.objects.create(username='AlunoMedicina1', email='aluno_med1@gmail.com', course=Course.objects.filter(name='Medicina')[0])
 Student.objects.create(username='AlunoMedicina2', email='aluno_med2@gmail.com', course=Course.objects.filter(name='Medicina')[0])
 
-# 
+# Creating Emotions
+
+Emotion.objects.create(emotion_type='g', image_link='cool-website/with/cool-images/good')
+Emotion.objects.create(emotion_type='b', image_link='cool-website/with/cool-images/bad')

@@ -781,31 +781,27 @@ class EmotionViewSet(ModelViewSet):
     """
     def list(self, request):
       """
-      API endpoint that allows all courses to be viewed.
+      API endpoint that allows all emotions to be viewed.
       ---
       Response example:
       ```
       {
-        "count": 4,
+        "count": 2,
         "next": null,
         "previous": null,
         "results": [
-          {
-            "id": 1,
-            "name": "Miserável"
-          },
-          {
-            "id": 2,
-            "name": "Infeliz"
-          },
-          {
-            "id": 3,
-            "name": "Triste"
-          },
-          {
-            "id": 4,
-            "name": "Amargurado"
-          }
+            {
+                "id": 3,
+                "name": "Good",
+                "emotion_type": "g",
+                "image_link": "cool-website/with/cool-images/good"
+            },
+            {
+                "id": 4,
+                "name": "Bad",
+                "emotion_type": "b",
+                "image_link": "cool-website/with/cool-images/bad"
+            }
         ]
       }
       ```
