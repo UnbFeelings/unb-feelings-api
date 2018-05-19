@@ -70,7 +70,7 @@ class CampusTestCase(APITestCase):
 
         self._check_admin_only_access(
             client,
-            lambda: client.put('/api/campus/{}/'.format(campus.id), {
+            lambda: client.patch('/api/campus/{}/'.format(campus.id), {
                         "name": "other name"
                     }),
             "test@user.com", "testuser")
@@ -82,7 +82,7 @@ class CampusTestCase(APITestCase):
         token = self._get_user_token("test@user.com", "testuser")
 
         client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(token))
-        response = client.put('/api/campus/{}/'.format(campus.id),
+        response = client.patch('/api/campus/{}/'.format(campus.id),
                               {"name": "other name"})
 
         self.assertEqual(200, response.status_code)
