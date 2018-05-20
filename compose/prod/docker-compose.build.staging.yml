@@ -3,6 +3,6 @@ services:
   # Homolog enviroment
   unbfeelings-hom:
     build:
-      context: .
+      context: ../../
       dockerfile: ./compose/prod/Dockerfile
     image: unbfeelings/api:staging

@@ -4,7 +4,6 @@ from rest_framework import permissions
 
 
 class DefaultPermission(permissions.IsAuthenticated):
-
     def has_permission(self, request, view):
         permission = super().has_permission(request, view)
 
@@ -18,7 +17,6 @@ class DefaultPermission(permissions.IsAuthenticated):
 
 
 class StudentPermissions(permissions.BasePermission):
-
     def __init__(self):
         self.permission = False
         self.request = None
@@ -36,8 +34,8 @@ class StudentPermissions(permissions.BasePermission):
             self.user_id = str(self.request.user.id)
             self.user_request_id = \
                 self.request.path.split('/users/')[1][:-1]
-            if (self.request.method == 'POST' and
-                    self.request.user.is_anonymous):
+            if (self.request.method == 'POST'
+                    and self.request.user.is_anonymous):
                 self.permission = True
 
             if self.user_id == self.user_request_id:
@@ -52,7 +50,6 @@ class StudentPermissions(permissions.BasePermission):
 
 
 class AdminItemPermissions(permissions.BasePermission):
-
     def __init__(self):
         self.permission = False
 
@@ -68,3 +65,60 @@ class AdminItemPermissions(permissions.BasePermission):
             self.permission = True
 
         return self.permission
+
+
+class NonAdminCanOnlyGet(permissions.BasePermission):
+    """
+    Non admin members can only use get requests
+    """
+
+    def has_permission(self, request, view):
+        return self._base_check(request)
+
+    def has_object_permission(self, request, view, obj):
+        return self._base_check(request)
+
+    def _base_check(self, request):
+        if request.method == "GET":
+            return True
+        else:
+            return request.user and request.user.is_staff
+
+
+class PostPermission(permissions.BasePermission):
+    """
+    Admins and the post owner can do all requests.
+    But others users(even anon users) only do GET requests
+    """
+
+    def has_permission(self, request, view):
+        """
+        Permissions for routes:
+            GET /posts/
+            POST /posts/
+        """
+        if request.method == "GET":
+            return True
+
+        if not request.user:
+            return False
+
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, post):
+        """
+        Permissions for routes:
+            GET /posts/:id
+            PUT/PATCH /posts/:id
+            DELETE /posts/:id
+        """
+        if request.method == "GET":
+            return True
+
+        if not request.user:
+            return False
+
+        if request.user.is_staff:
+            return True
+
+        return post.author == request.user

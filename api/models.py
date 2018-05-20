@@ -69,22 +69,14 @@ class Tag(models.Model):
         return self.description
 
 
-class Emotion(models.Model):
-    CHOICES = (
+class Post(models.Model):
+    EMOTIONS = (
         ('b', 'Bad'),
         ('g', 'Good'),
     )
 
-    emotion_type = models.CharField(max_length=1, choices=CHOICES)
-    image_link = models.CharField(max_length=100)
-
-    def __str__(self):
-        return str((self.emotion_type, self.get_emotion_type_display()))
-
-
-class Post(models.Model):
     content = models.CharField(max_length=280)
     tag = models.ManyToManyField(Tag, blank=True)
     author = models.ForeignKey(Student, on_delete=None)
     subject = models.ForeignKey(Subject, null=True, blank=True, on_delete=models.CASCADE)
-    emotion = models.ManyToManyField(Emotion)
+    emotion = models.CharField(max_length=1, choices=EMOTIONS, blank=False)
