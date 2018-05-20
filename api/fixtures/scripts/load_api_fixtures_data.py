@@ -1,8 +1,14 @@
+import os
 from xml.dom import minidom
 
-from api.models import Campus, Course, Subject
+from api.models import (
+    Campus, Course, Post, Student, Subject, Tag,
+)
 
-xml = minidom.parse('api/fixtures/disciplinas.xml')
+BASE_DIR = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+
+print('BASE_DIR = {}'.format(BASE_DIR))
+xml = minidom.parse(BASE_DIR + '/disciplinas.xml')
 items_root = xml.getElementsByTagName('items')[0]
 
 ENGENHARIA = items_root.getElementsByTagName('ENGENHARIA')
@@ -58,3 +64,14 @@ for s in ENERGIA:
     name = s.firstChild.nodeValue
     print("\tGetting or creating subject {}".format(name))
     sub = Subject.objects.get_or_create(name=name, course=energia)[0]
+
+
+# Creating Students
+print("\nFGA STUDENTS")
+fga_courses = [engenharia, software, eletronica, aeroespacial, energia]
+
+for i, course in enumerate(fga_courses):
+    username = '_'.join(['student', course.name, str(i)])
+    email = username + '@b.com'
+    print("\tGetting or creating student {}".format(username))
+    Student.objects.get_or_create(username=username, email=email, course=course)
