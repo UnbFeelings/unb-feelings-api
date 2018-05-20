@@ -30,6 +30,7 @@ class PostViewSet(ModelViewSet):
                     "author": 1,
                     "content": "asdfasd",
                     "subject": 15,
+                    "emotion":"g",
                     "tag": [
                         1
                     ]
@@ -51,6 +52,7 @@ class PostViewSet(ModelViewSet):
             "author": pedro_1195@hotmail.com,
             "content": "Quero morrer",
             "subject": COMBUSTIVEIS E BIOCOMBUSTIVEIS,
+            "emotion": "b",
             "tag": [
                 TAG1,
                 educacao
@@ -64,6 +66,7 @@ class PostViewSet(ModelViewSet):
             "author": 1,
             "content": "Quero morrer",
             "subject": 11,
+            "emotion":"b",
             "tag": [
                 1,
                 2
@@ -92,6 +95,7 @@ class PostViewSet(ModelViewSet):
             "author": 1,
             "content": "asdfasd",
             "subject": 15,
+            "emotion": "g",
             "tag": [
                 1
             ]
@@ -119,6 +123,7 @@ class PostViewSet(ModelViewSet):
             "author": 1,
             "content": "Melhor aula do mundo",
             "subject": 15,
+            "emotion": "g",
             "tag": [
                 1
             ]
@@ -141,6 +146,7 @@ class PostViewSet(ModelViewSet):
               "author": hpedro1195@gmail.com,
               "content": "Pior aula do mundo",
               "subject": 15,
+              "emotion": "b",
               "tag": [
                 TAG1,
                 educacao
@@ -156,6 +162,7 @@ class PostViewSet(ModelViewSet):
               "author": hpedro1195@gmail.com,
               "content": "Pior aula do mundo",
               "subject": 15,
+              "emotion": "b",
               "tag": [
                 1,
                 2
