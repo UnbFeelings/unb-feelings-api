@@ -6,7 +6,7 @@ from rest_framework_swagger.views import get_swagger_view
 
 from api.views import (
     CourseViewSet, CampusViewSet, SubjectViewSet, StudentViewSet,
-    PostViewSet, TagViewSet, EmotionViewSet, CustomObtainJWTToken
+    PostViewSet, TagViewSet, CustomObtainJWTToken
 )
 
 schema_view = get_swagger_view(title='UnB Feelings API')
@@ -17,7 +17,6 @@ ROUTER.register(r'subjects', SubjectViewSet, base_name='subjects')
 ROUTER.register(r'users', StudentViewSet)
 ROUTER.register(r'tags', TagViewSet, base_name='tags')
 ROUTER.register(r'posts', PostViewSet, base_name='posts')
-ROUTER.register(r'emotions', EmotionViewSet, base_name='emotions')
 ROUTER.register(r'campus', CampusViewSet, base_name='campus')
 
 urlpatterns = [
