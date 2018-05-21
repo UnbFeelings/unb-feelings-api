@@ -65,13 +65,45 @@ for s in ENERGIA:
     print("\tGetting or creating subject {}".format(name))
     sub = Subject.objects.get_or_create(name=name, course=energia)[0]
 
-
-# Creating Students
 print("\nFGA STUDENTS")
 fga_courses = [engenharia, software, eletronica, aeroespacial, energia]
 
 for i, course in enumerate(fga_courses):
-    username = '_'.join(['student', course.name, str(i)])
+    username = 'student_' + course.name
     email = username + '@b.com'
     print("\tGetting or creating student {}".format(username))
-    Student.objects.get_or_create(username=username, email=email, course=course)
+    Student.objects.get_or_create(username=username, email=email, course=course)[0]
+
+print("\nTAGs")
+tags = ["boladao", "antietico", "cortella", "avestruz", "changemymind", "tanadisney"]
+for tag in tags:
+    print("\tGetting or creating tag {}".format(tag))
+    Tag.objects.get_or_create(description=tag)[0]
+
+
+print("\nPOST")
+for tag in Tag.objects.all():
+    pass
+
+contents = ["Trueborn son of Lannister.",
+            "Tell my lord father",
+            "Jon said.",
+            "He favored Jon with a rueful grin.", \
+            "All dwarfs may be bastards",
+            "Whistling a tune.",
+            "Just a moment", \
+            "Tyrion Lannister stood tall as a king.",
+            "― George R.R. Martin",]
+
+for i, content in enumerate(contents):
+    student = Student.objects.all()[i % Student.objects.count()]
+    subject = Subject.objects.all()[i % Subject.objects.count()]
+    emotion = Post.EMOTIONS[i % 2]
+
+    post, created = Post.objects.get_or_create(content=content, author=student, subject=subject, emotion=emotion)
+    if created:
+        tags = Tag.objects.all()[i:]
+        post.tag.add(*tags)
+        post.save()
+
+    print("\tGetting or creating post {}".format(post))

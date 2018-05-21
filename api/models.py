@@ -80,3 +80,11 @@ class Post(models.Model):
     author = models.ForeignKey(Student, on_delete=None)
     subject = models.ForeignKey(Subject, null=True, blank=True, on_delete=models.CASCADE)
     emotion = models.CharField(max_length=1, choices=EMOTIONS, blank=False)
+
+    def __str__(self):
+        tags = ['#' + tag.description for tag in self.tag.all()]
+        tags_str = '(' + ', '.join(tags) + ')'
+
+        fields = [self.content, tags_str, self.author.username, self.subject, self.emotion]
+        out = ', '.join(map(str, fields))
+        return out
