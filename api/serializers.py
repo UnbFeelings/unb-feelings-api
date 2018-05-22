@@ -99,7 +99,10 @@ class PostSerializer(serializers.ModelSerializer):
 
         if isinstance(request, Request):
             user = request.user
-            user_id = request.parser_context['kwargs'].get('user_id')
+            try:
+                user_id = int(request.parser_context['kwargs'].get('user_id'))
+            except:  # noqa: E722
+                user_id = 0
 
             if user.id == user_id:
                 return  # The user can see his Posts content data
