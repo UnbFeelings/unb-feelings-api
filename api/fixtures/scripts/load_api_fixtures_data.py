@@ -72,7 +72,9 @@ for i, course in enumerate(fga_courses):
     username = 'student_' + course.name
     email = username + '@b.com'
     print("\tGetting or creating student {}".format(username))
-    Student.objects.get_or_create(username=username, email=email, course=course)[0]
+    student = Student.objects.get_or_create(email=email, course=course)[0]
+    student.set_password("test")
+    student.save()
 
 print("\nTAGs")
 tags = ["boladao", "antietico", "cortella", "avestruz", "changemymind", "tanadisney"]
@@ -98,9 +100,10 @@ contents = ["Trueborn son of Lannister.",
 for i, content in enumerate(contents):
     student = Student.objects.all()[i % Student.objects.count()]
     subject = Subject.objects.all()[i % Subject.objects.count()]
-    emotion = Post.EMOTIONS[i % 2]
+    emotion = Post.EMOTIONS[i % 2][0]
 
-    post, created = Post.objects.get_or_create(content=content, author=student, subject=subject, emotion=emotion)
+    post, created = Post.objects.get_or_create(
+        content=content, author=student, subject=subject, emotion=emotion)
     if created:
         tags = Tag.objects.all()[i:]
         post.tag.add(*tags)
