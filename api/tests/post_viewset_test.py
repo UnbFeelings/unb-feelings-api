@@ -119,7 +119,7 @@ class PostTestCase(APITestCase, TestCheckMixin):
         response = client.get('/api/posts/user/{}/'.format(self.user.id))
 
         self.assertEqual(200, response.status_code)
-        for post in response.data:
+        for post in response.data['results']:
             self.assertEqual(True, 'content' in post)
 
     def test_user_posts_dont_have_content(self):

@@ -80,6 +80,8 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    tag = TagSerializer(many=True, read_only=True)
+
     class Meta:
         model = Post
         fields = [

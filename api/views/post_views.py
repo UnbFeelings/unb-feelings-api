@@ -205,9 +205,18 @@ class PostViewSet(ModelViewSet):
         """
         user = get_object_or_404(Student, pk=user_id)
         posts = Post.objects.all().filter(author=user)
+        posts_paginated = self.paginate_queryset(posts)
 
-        data = PostSerializer(
-            data=posts, many=True, context={'request': request})
+        if posts_paginated is not None:
+            serializer = PostSerializer(
+                data=posts_paginated, many=True, context={'request': request})
 
-        data.is_valid()
-        return Response(data.data)
+            serializer.is_valid()
+            return self.get_paginated_response(serializer.data)
+        else:
+
+            data = PostSerializer(
+                data=posts, many=True, context={'request': request})
+
+            data.is_valid()
+            return Response(data.data)
