@@ -1,4 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from api.serializers import PostSerializer
 from api.models import Post
@@ -173,3 +175,13 @@ class PostViewSet(ModelViewSet):
         """
         response = super(PostViewSet, self).update(request, pk, **kwargs)
         return response
+
+    @api_view(['GET'])
+    def user_posts(request, user_id):
+        posts = Post.objects.all().filter(author=user_id)
+
+        data = PostSerializer(
+            data=posts, many=True, context={'request': request})
+
+        data.is_valid()
+        return Response(data.data)
