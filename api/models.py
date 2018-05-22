@@ -80,6 +80,7 @@ class Post(models.Model):
     author = models.ForeignKey(Student, on_delete=None)
     subject = models.ForeignKey(Subject, null=True, blank=True, on_delete=models.CASCADE)
     emotion = models.CharField(max_length=1, choices=EMOTIONS, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         tags = ['#' + tag.description for tag in self.tag.all()]

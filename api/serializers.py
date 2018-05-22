@@ -88,4 +88,5 @@ class PostSerializer(serializers.ModelSerializer):
             'subject',
             'tag',
             'emotion',
+            'created_at',
         ]
