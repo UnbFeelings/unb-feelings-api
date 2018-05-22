@@ -1,7 +1,11 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import api_view, list_route
+from rest_framework.response import Response
 
 from api.serializers import PostSerializer
-from api.models import Post
+from api.models import Post, Student
 from api.permissions import PostPermission
 
 
@@ -173,3 +177,37 @@ class PostViewSet(ModelViewSet):
         """
         response = super(PostViewSet, self).update(request, pk, **kwargs)
         return response
+
+    @list_route(
+        permission_classes=[],
+        methods=['GET'],
+        url_path='user/(?P<user_id>\d+)')
+    def user_posts(self, request, user_id=None):
+        """
+        API endpoint that getts the posts of a given user
+        ---
+        Response example:
+        ```
+        [
+          {
+            "id": 1,
+            "author": hpedro1195@gmail.com,
+            "content": "Pior aula do mundo",
+            "subject": 15,
+            "emotion": "b",
+            "tag": [
+              1,
+              2
+            ]
+          }
+        ]
+        ```
+        """
+        user = get_object_or_404(Student, pk=user_id)
+        posts = Post.objects.all().filter(author=user)
+
+        data = PostSerializer(
+            data=posts, many=True, context={'request': request})
+
+        data.is_valid()
+        return Response(data.data)

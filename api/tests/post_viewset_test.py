@@ -64,7 +64,6 @@ class PostTestCase(APITestCase, TestCheckMixin):
         response = client.post('/api/posts/', data)
 
         self.assertEqual(201, response.status_code)
-        self.assertEqual(data["content"], response.data['content'])
         self.assertEqual(data["author"], response.data['author'])
         self.assertEqual(data["subject"], response.data['subject'])
         self.assertEqual(data["emotion"], response.data['emotion'])
@@ -73,7 +72,7 @@ class PostTestCase(APITestCase, TestCheckMixin):
         client = APIClient()
 
         data = {
-            "content": "Other content",
+            "emotion": "b",
         }
 
         post = Post.objects.get(content="Allahu Akbar !")
@@ -88,7 +87,7 @@ class PostTestCase(APITestCase, TestCheckMixin):
         response = client.patch('/api/posts/{}/'.format(post.id), data)
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual("Other content", response.data['content'])
+        self.assertEqual("b", response.data['emotion'])
         self.assertEqual(post.id, response.data['id'])
 
     def test_only_admin_can_delete(self):
@@ -107,3 +106,30 @@ class PostTestCase(APITestCase, TestCheckMixin):
         self.assertEqual(None, response.data)
         self.assertEqual(
             0, len(Post.objects.all().filter(content="Allahu Akbar !")))
+
+    def test_user_posts_have_content(self):
+        """
+        When getting post data, if it is the data from the logged user,
+        content will be avalible
+        """
+        client = APIClient()
+        token = self._get_user_token("test@user.com", "testuser")
+
+        client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(token))
+        response = client.get('/api/posts/user/{}/'.format(self.user.id))
+
+        self.assertEqual(200, response.status_code)
+        for post in response.data:
+            self.assertEqual(True, 'content' in post)
+
+    def test_user_posts_dont_have_content(self):
+        """
+        When getting post data, if it is not the data from the logged user,
+        content will not be avalible
+        """
+        client = APIClient()
+        response = client.get('/api/posts/user/{}/'.format(self.user.id))
+
+        self.assertEqual(200, response.status_code)
+        for post in response.data:
+            self.assertEqual(False, 'content' in post)
