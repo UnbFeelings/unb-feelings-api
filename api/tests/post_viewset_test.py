@@ -116,7 +116,7 @@ class PostTestCase(APITestCase, TestCheckMixin):
         token = self._get_user_token("test@user.com", "testuser")
 
         client.credentials(HTTP_AUTHORIZATION='JWT {}'.format(token))
-        response = client.get('/api/posts/user/{}'.format(self.user.id))
+        response = client.get('/api/posts/user/{}/'.format(self.user.id))
 
         self.assertEqual(200, response.status_code)
         for post in response.data:
@@ -128,7 +128,7 @@ class PostTestCase(APITestCase, TestCheckMixin):
         content will not be avalible
         """
         client = APIClient()
-        response = client.get('/api/posts/user/{}'.format(self.user.id))
+        response = client.get('/api/posts/user/{}/'.format(self.user.id))
 
         self.assertEqual(200, response.status_code)
         for post in response.data:

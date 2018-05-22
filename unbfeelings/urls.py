@@ -1,5 +1,4 @@
 from django.conf.urls import include, url
-from django.urls import path
 
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import refresh_jwt_token
@@ -26,5 +25,4 @@ urlpatterns = [
     url(r'^api/token-auth/', CustomObtainJWTToken.as_view()),
     url(r'^api/token-refresh/', refresh_jwt_token),
     url(r'^api/anonymous-name/', StudentViewSet.anonymous_name),
-    path('api/posts/user/<int:user_id>', PostViewSet.user_posts),
 ]
