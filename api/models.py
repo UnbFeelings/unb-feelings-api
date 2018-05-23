@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 
 
 class Campus(models.Model):
@@ -80,3 +81,25 @@ class Post(models.Model):
     author = models.ForeignKey(Student, on_delete=None)
     subject = models.ForeignKey(Subject, null=True, blank=True, on_delete=models.CASCADE)
     emotion = models.CharField(max_length=1, choices=EMOTIONS, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        tags = ['#' + tag.description for tag in self.tag.all()]
+        tags_str = '(' + ', '.join(tags) + ')'
+
+        fields = [self.content, tags_str, self.author.username, self.subject, self.emotion]
+        out = ', '.join(map(str, fields))
+        return out
+
+
+def validate_post_emotion_choice(sender, instance, **kwargs):
+    valid_emotions = [t[0] for t in sender.EMOTIONS]
+
+    if instance.emotion not in valid_emotions:
+
+        raise ValidationError(
+            'Post Emotion "{}" is not one of the permitted values: {}'.format(
+                instance.emotion, ', '.join(valid_emotions)))
+
+
+models.signals.pre_save.connect(validate_post_emotion_choice, sender=Post)

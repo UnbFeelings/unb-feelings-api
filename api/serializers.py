@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.request import Request
 
 from .models import (
     Campus, Course, Post, Student, Subject, Tag
@@ -79,6 +80,8 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    tag = TagSerializer(many=True, read_only=True)
+
     class Meta:
         model = Post
         fields = [
@@ -88,4 +91,34 @@ class PostSerializer(serializers.ModelSerializer):
             'subject',
             'tag',
             'emotion',
+            'created_at',
         ]
+
+    def __init__(self, *args, **kwargs):
+        super(serializers.ModelSerializer, self).__init__(*args, **kwargs)
+
+        request = self._get_request_from_kwargs(kwargs)
+
+        if isinstance(request, Request):
+            user = request.user
+            try:
+                user_id = int(request.parser_context['kwargs'].get('user_id'))
+            except:  # noqa: E722
+                user_id = 0
+
+            if user.id == user_id:
+                return  # The user can see his Posts content data
+
+        # For any other user remove the content
+        exclude_fields = {'content', }
+
+        for field in exclude_fields:
+            self.fields.pop(field)
+
+    def _get_request_from_kwargs(self, kwargs):
+        context = kwargs.get('context', None)
+
+        if context is not None:
+            return context.get('request', None)
+
+        return None

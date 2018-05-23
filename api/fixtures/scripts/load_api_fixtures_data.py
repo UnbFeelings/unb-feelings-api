@@ -1,8 +1,14 @@
+import os
 from xml.dom import minidom
 
-from api.models import Campus, Course, Subject
+from api.models import (
+    Campus, Course, Post, Student, Subject, Tag,
+)
 
-xml = minidom.parse('api/fixtures/disciplinas.xml')
+BASE_DIR = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+
+print('BASE_DIR = {}'.format(BASE_DIR))
+xml = minidom.parse(BASE_DIR + '/disciplinas.xml')
 items_root = xml.getElementsByTagName('items')[0]
 
 ENGENHARIA = items_root.getElementsByTagName('ENGENHARIA')
@@ -58,3 +64,49 @@ for s in ENERGIA:
     name = s.firstChild.nodeValue
     print("\tGetting or creating subject {}".format(name))
     sub = Subject.objects.get_or_create(name=name, course=energia)[0]
+
+print("\nFGA STUDENTS")
+fga_courses = [engenharia, software, eletronica, aeroespacial, energia]
+
+for i, course in enumerate(fga_courses):
+    username = 'student_' + course.name
+    email = username + '@b.com'
+    print("\tGetting or creating student {}".format(username))
+    student = Student.objects.get_or_create(email=email, course=course)[0]
+    student.set_password("test")
+    student.save()
+
+print("\nTAGs")
+tags = ["boladao", "antietico", "cortella", "avestruz", "changemymind", "tanadisney"]
+for tag in tags:
+    print("\tGetting or creating tag {}".format(tag))
+    Tag.objects.get_or_create(description=tag)[0]
+
+
+print("\nPOST")
+for tag in Tag.objects.all():
+    pass
+
+contents = ["Trueborn son of Lannister.",
+            "Tell my lord father",
+            "Jon said.",
+            "He favored Jon with a rueful grin.", \
+            "All dwarfs may be bastards",
+            "Whistling a tune.",
+            "Just a moment", \
+            "Tyrion Lannister stood tall as a king.",
+            "― George R.R. Martin",]
+
+for i, content in enumerate(contents):
+    student = Student.objects.all()[i % Student.objects.count()]
+    subject = Subject.objects.all()[i % Subject.objects.count()]
+    emotion = Post.EMOTIONS[i % 2][0]
+
+    post, created = Post.objects.get_or_create(
+        content=content, author=student, subject=subject, emotion=emotion)
+    if created:
+        tags = Tag.objects.all()[i:]
+        post.tag.add(*tags)
+        post.save()
+
+    print("\tGetting or creating post {}".format(post))
