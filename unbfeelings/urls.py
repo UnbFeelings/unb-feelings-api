@@ -27,5 +27,4 @@ urlpatterns = [
     url(r'^api/token-auth/', CustomObtainJWTToken.as_view()),
     url(r'^api/token-refresh/', refresh_jwt_token),
     url(r'^api/anonymous-name/', StudentViewSet.anonymous_name),
-    path('api/posts/subject/<int:pk>/', PostBySubjectList.as_view()),
 ]
