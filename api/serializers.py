@@ -122,16 +122,3 @@ class PostSerializer(serializers.ModelSerializer):
             return context.get('request', None)
 
         return None
-
-
-class DiagnosisSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = [
-            'id',
-            'author',
-            'subject',
-            'tag',
-            'emotion',
-            'created_at',
-        ]

@@ -6,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from api.serializers import PostSerializer, DiagnosisSerializer
+from api.serializers import PostSerializer
 from api.models import Post, Subject
 
 
@@ -42,5 +42,11 @@ class DiagnosisViewSet(ModelViewSet):
 			"friday": posts.filter(created_at__week_day=6).values(),
 			"saturday": posts.filter(created_at__week_day=7).values(),
 		}
+
+		for day in diagnosis.keys():
+			new_day = list(
+				map(lambda post: {k: post[k] for k in post.keys() if k != "content"}, diagnosis[day])
+			)
+			diagnosis[day] = new_day
 
 		return Response(diagnosis)
