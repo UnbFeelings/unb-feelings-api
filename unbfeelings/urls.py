@@ -27,6 +27,5 @@ urlpatterns = [
     url(r'^api/token-refresh/', refresh_jwt_token),
     url(r'^api/anonymous-name/', StudentViewSet.anonymous_name),
     url(r'^api/diagnosis/(?P<target>.+)/(?P<target_id>\d+)/', DiagnosisViewSet.diagnosis),
-    url(r'^api/diagnosis/unb/', DiagnosisViewSet.diagnosis),
-    # url(r'^api/subject/(?P<target_id>\d+)/diagnosis/', DiagnosisViewSet.diagnosis),
+    url(r'^api/diagnosis/(?P<target>.+)/', DiagnosisViewSet.diagnosis),
 ]

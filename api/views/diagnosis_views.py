@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.http import Http404
 from datetime import datetime, timedelta
 
 from rest_framework.viewsets import ModelViewSet
@@ -54,10 +55,12 @@ class DiagnosisViewSet(ModelViewSet):
 			posts = Post.objects.all().filter(
 				author=student, created_at__gt=timezone.now()-timedelta(days=8)
 			)
-		else:
+		elif target == 'unb':
 			posts = Post.objects.all().filter(
 				created_at__gt=timezone.now()-timedelta(days=8)
 			)
+		else:
+			raise Http404
 
 		diagnosis = {
 			"sunday": posts.filter(created_at__week_day=1).values(),
