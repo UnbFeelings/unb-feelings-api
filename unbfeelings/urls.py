@@ -7,7 +7,7 @@ from rest_framework_swagger.views import get_swagger_view
 
 from api.views import (
     CampusViewSet, CourseViewSet, CustomObtainJWTToken, PostViewSet,
-    StudentViewSet, SubjectViewSet, TagViewSet, PostBySubjectList
+    StudentViewSet, SubjectViewSet, TagViewSet
 )
 
 
