@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from api.serializers import PostSerializer
-from api.models import Post, Subject
+from api.models import Post, Subject, Student
 
 
 class DiagnosisViewSet(ModelViewSet):
@@ -18,20 +18,46 @@ class DiagnosisViewSet(ModelViewSet):
 	serializer_class = PostSerializer
 
 	@api_view(['GET'])
-	def subject_diagnosis(request, subject_id):
+	def diagnosis(request, target=None, target_id=None):
 		"""
-		API endpoint that allows getting a diagnosis of a subject
+		API endpoint that allows getting a diagnosis of a student, subject or university.
 		---
 		Response example:
 		```
+		{
+			"sunday": [],
+			"monday": [],
+			"tuesday": [
+				{
+					"id": 1,
+					"author_id": 3,
+					"subject_id": 262,
+					"emotion": "g",
+					"created_at": "2018-05-23T00:20:22.344509Z"
+				}
+			],
+			"wednesday": [],
+			"thursday": [],
+			"friday": [],
+			"saturday": []
+		}
 		```
 		"""
-		subject = get_object_or_404(Subject, pk=subject_id)
-
 		# only posts from the last week
-		posts = Post.objects.all().filter(
-			subject=subject, created_at__gt=timezone.now()-timedelta(days=8)
-		)
+		if target == 'subject':
+			subject = get_object_or_404(Subject, pk=target_id)
+			posts = Post.objects.all().filter(
+				subject=subject, created_at__gt=timezone.now()-timedelta(days=8)
+			)
+		elif target == 'student':
+			student = get_object_or_404(Student, pk=target_id)
+			posts = Post.objects.all().filter(
+				author=student, created_at__gt=timezone.now()-timedelta(days=8)
+			)
+		else:
+			posts = Post.objects.all().filter(
+				created_at__gt=timezone.now()-timedelta(days=8)
+			)
 
 		diagnosis = {
 			"sunday": posts.filter(created_at__week_day=1).values(),
