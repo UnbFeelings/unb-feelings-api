@@ -79,7 +79,7 @@ class DiagnosisTestCase(APITestCase):
 
         self.assertEqual(404, response.status_code)
 
-    def test_get_posts_by_subjest(self):
+    def test_get_posts_by_subject(self):
         client = APIClient()
         response = client.get("/api/diagnosis/{}/{}/".format(
             "subject", self.c1.id))
