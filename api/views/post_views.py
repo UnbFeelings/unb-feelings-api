@@ -184,7 +184,7 @@ class PostViewSet(ModelViewSet):
         url_path='user/(?P<user_id>\d+)')
     def user_posts(self, request, user_id=None):
         """
-        API endpoint that getts the posts of a given user
+        API endpoint that gets the posts of a given user
         ---
         Response example:
         ```
