@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, list_route
 from rest_framework.response import Response
 
 from api.serializers import PostSerializer
-from api.models import Post, Student
+from api.models import Post, Student, Subject
 from api.permissions import PostPermission
 
 
@@ -205,6 +205,49 @@ class PostViewSet(ModelViewSet):
         """
         user = get_object_or_404(Student, pk=user_id)
         posts = Post.objects.all().filter(author=user)
+        posts_paginated = self.paginate_queryset(posts)
+
+        if posts_paginated is not None:
+            serializer = PostSerializer(
+                data=posts_paginated, many=True, context={'request': request})
+
+            serializer.is_valid()
+            return self.get_paginated_response(serializer.data)
+        else:
+
+            data = PostSerializer(
+                data=posts, many=True, context={'request': request})
+
+            data.is_valid()
+            return Response(data.data)
+            
+    @list_route(
+        permission_classes=[],
+        methods=['GET'],
+        url_path='subject/(?P<subject_id>\d+)')
+    def subject_posts(self, request, subject_id=None):
+        """
+        API endpoint that getts the posts of a given subject
+        ---
+        Response example:
+        ```
+        [
+          {
+            "id": 1,
+            "author": hpedro1195@gmail.com,
+            "content": "Pior aula do mundo",
+            "subject": 15,
+            "emotion": "b",
+            "tag": [
+              1,
+              2
+            ]
+          }
+        ]
+        ```
+        """
+        subject = get_object_or_404(Subject, pk=subject_id)
+        posts = Post.objects.all().filter(subject=subject)
         posts_paginated = self.paginate_queryset(posts)
 
         if posts_paginated is not None:
