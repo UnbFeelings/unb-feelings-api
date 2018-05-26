@@ -22,8 +22,10 @@ git clone https://github.com/UnbFeelings/unb-feelings-api.git
 ```bash
 sudo docker-compose build
 sudo docker-compose run dev python manage.py migrate
+sudo docker-compose run dev python3 manage.py populatedb
+sudo docker-compose run dev python manage.py shell < api/fixtures/scripts/load_dev_data.py
 ```
-* Esse primeiro passo só é necessário uma vez. Mas você precisará executar uma nova build sempre que um novo pacote pip for adicionado aos requirements.
+* Esse primeiro passo só é necessário uma vez. Mas você precisará executar uma nova build(apenas o passo de build) sempre que um novo pacote pip for adicionado aos requirements.
 
 E para executar:
 ```bash
@@ -47,7 +49,12 @@ docker exec -it <nome_do_container> bash
 
 * Com isso você estará dentro do terminal do container e poderá criar um super usuário via shell.
 O ```python manage.py createsuperuser``` não está funcionando
-devido ao usuário precisar de um curso, então para criar um usuário é necessário entrar via shell pegar(ou criar) um curso e usa-lo na criação do usuário.
+devido ao usuário precisar de um curso, então para criar um usuário é necessário entrar via shell pegar(ou criar) um curso e usa-lo na criação do usuário. Mas dentro do "load_dev_data.py"(comando na parte de build) um usuário para curso é criado, ficando:
+    * email: student_ENGENHARIA@b.com, password: test
+    * email: student_SOFTWARE@b.com, password: test
+    * email: student_ELETRONICA@b.com, password: test
+    * email: student_AEROESPACIAL@b.com, password: test
+    * email: student_ENERGIA@b.com, password: test
 
 * Com isso você pode modificar os arquivos localmente em sua máquina que ele serão automaticamente modificados dentro do container, possibilitando assim ter um ambiente de desenvolvimento sem a necessidade de muita configuração do ambiente.
 
