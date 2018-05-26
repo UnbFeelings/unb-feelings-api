@@ -7,7 +7,6 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from api.serializers import PostSerializer
 from api.models import Post, Subject, Student
 
 
@@ -17,16 +16,21 @@ class DiagnosisViewSet(ModelViewSet):
     API endpoint that allows getting a diagnosis of a student, subject
     or university.
     """
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
 
     @api_view(['GET'])
-    def diagnosis(request, target=None, target_id=None):
+    def diagnosis(request):
         """
         API endpoint that allows getting a diagnosis of a student, subject or
         university.
 
-        For university, do not pass a target_id.
+        By default it will return the unb feelings.
+        But by using query params target and target_id it will return
+        student and subject feelings.
+
+        * /api/diagnosis/ --> unb feelings
+        * /api/diagnosis/?target=student&target_id=5 --> student feelings
+        * /api/diagnosis/?target=subject&target_id=7 --> subject feelings
+
         ---
         Response example:
         ```
@@ -49,6 +53,9 @@ class DiagnosisViewSet(ModelViewSet):
         }
         ```
         """
+        target = request.query_params.get("target", None)
+        target_id = request.query_params.get("target_id", None)
+
         # only posts from the last week
         posts = get_posts_by_target(target, target_id)
 
@@ -75,7 +82,7 @@ class DiagnosisViewSet(ModelViewSet):
         return Response(diagnosis)
 
 
-def get_posts_by_target(target, target_id):
+def get_posts_by_target(target=None, target_id=None):
     """
     Given a target and its id, it returns the target posts on the week
     raises 404 error when target not found or target is invalid.
@@ -85,22 +92,21 @@ def get_posts_by_target(target, target_id):
         * student
         * unb
     """
+    if target is None:  # is no target is given, return all unb feelings
+        return Post.objects.all().filter(
+            created_at__gt=timezone.now() - timedelta(days=8))
+
     if target == 'subject':
         subject = get_object_or_404(Subject, pk=target_id)
 
         return Post.objects.all().filter(
-            subject=subject,
-            created_at__gt=timezone.now() - timedelta(days=8))
+            subject=subject, created_at__gt=timezone.now() - timedelta(days=8))
 
     if target == 'student':
         student = get_object_or_404(Student, pk=target_id)
 
         return Post.objects.all().filter(
-            author=student,
-            created_at__gt=timezone.now() - timedelta(days=8))
+            author=student, created_at__gt=timezone.now() - timedelta(days=8))
 
-    if target == 'unb':
-        return Post.objects.all().filter(
-            created_at__gt=timezone.now() - timedelta(days=8))
-
+    # if an invalid target is given return an 404 response
     raise Http404
