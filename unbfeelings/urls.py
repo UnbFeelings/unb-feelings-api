@@ -5,10 +5,9 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_swagger.views import get_swagger_view
 
-from api.views import (
-    CampusViewSet, CourseViewSet, CustomObtainJWTToken, DiagnosisViewSet, PostViewSet,
-    StudentViewSet, SubjectViewSet, TagViewSet
-)
+from api.views import (CampusViewSet, CourseViewSet, CustomObtainJWTToken,
+                       DiagnosisViewSet, PostViewSet, StudentViewSet,
+                       SubjectViewSet, TagViewSet)
 
 schema_view = get_swagger_view(title='UnB Feelings API')
 
@@ -26,6 +25,5 @@ urlpatterns = [
     url(r'^api/token-auth/', CustomObtainJWTToken.as_view()),
     url(r'^api/token-refresh/', refresh_jwt_token),
     url(r'^api/anonymous-name/', StudentViewSet.anonymous_name),
-    url(r'^api/diagnosis/(?P<target>.+)/(?P<target_id>\d+)/', DiagnosisViewSet.diagnosis),
-    url(r'^api/diagnosis/(?P<target>.+)/', DiagnosisViewSet.diagnosis),
+    url(r'^api/diagnosis/', DiagnosisViewSet.diagnosis),
 ]

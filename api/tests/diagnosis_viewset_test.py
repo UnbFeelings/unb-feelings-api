@@ -12,7 +12,7 @@ UserModel = get_user_model()
 
 TODAY = timezone.now()
 
-MONDAY = TODAY - timedelta(days=TODAY.weekday()-1)
+MONDAY = TODAY - timedelta(days=TODAY.weekday())
 TUESDAY = MONDAY + timedelta(days=1)
 WEDNESDAY = TUESDAY + timedelta(days=1)
 THURSDAY = WEDNESDAY + timedelta(days=1)
@@ -62,7 +62,7 @@ class DiagnosisTestCase(APITestCase):
         get all weekly feelings of UNB
         """
         client = APIClient()
-        response = client.get("/api/diagnosis/{}/".format("unb"))
+        response = client.get("/api/diagnosis/")
 
         self.assertEqual(200, response.status_code)
 
@@ -75,13 +75,13 @@ class DiagnosisTestCase(APITestCase):
         When an invalid target is given an error 404 is returned
         """
         client = APIClient()
-        response = client.get("/api/diagnosis/{}/".format("invalid"))
+        response = client.get("/api/diagnosis/?target={}".format("invalid"))
 
         self.assertEqual(404, response.status_code)
 
     def test_get_posts_by_subject(self):
         client = APIClient()
-        response = client.get("/api/diagnosis/{}/{}/".format(
+        response = client.get("/api/diagnosis/?target={}&target_id={}".format(
             "subject", self.c1.id))
 
         self.assertEqual(200, response.status_code)
@@ -89,9 +89,10 @@ class DiagnosisTestCase(APITestCase):
         for (day_date, day_name) in self.c1_days:
             post = Post.objects.filter(
                 created_at=day_date, subject=self.c1).first()
+
             self.assertEqual(post.id, response.data[day_name][0]['id'])
 
-        response = client.get("/api/diagnosis/{}/{}/".format(
+        response = client.get("/api/diagnosis/?target={}&target_id={}".format(
             "subject", self.f1.id))
 
         self.assertEqual(200, response.status_code)
@@ -103,7 +104,7 @@ class DiagnosisTestCase(APITestCase):
 
     def test_get_posts_by_student(self):
         client = APIClient()
-        response = client.get("/api/diagnosis/{}/{}/".format(
+        response = client.get("/api/diagnosis/?target={}&target_id={}".format(
             "student", self.user_a.id))
 
         self.assertEqual(200, response.status_code)
