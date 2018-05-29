@@ -63,7 +63,7 @@ class Tag(models.Model):
 
     @property
     def quantity(self):
-        return len(self.post_set.all())
+        return len(self.posts.all())
 
     def __str__(self):
         return self.description
