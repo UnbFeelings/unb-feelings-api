@@ -27,27 +27,33 @@ class CourseViewSet(ModelViewSet):
             "results": [
             {
                 "id": 1,
-                "name": "ENGENHARIA"
+                "name": "ENGENHARIA",
+                "campus": 1
             },
             {
                 "id": 2,
-                "name": "SOFTWARE"
+                "name": "SOFTWARE",
+                "campus": 1
             },
             {
                 "id": 3,
-                "name": "ELETRONICA"
+                "name": "ELETRONICA",
+                "campus": 1
             },
             {
                 "id": 4,
-                "name": "AEROESPACIAL"
+                "name": "AEROESPACIAL",
+                "campus": 1
             },
             {
                 "id": 5,
-                "name": "ENERGIA"
+                "name": "ENERGIA",
+                "campus": 1
             },
             {
                 "id": 6,
-                "name": "AUTOMOTIVA"
+                "name": "AUTOMOTIVA",
+                "campus": 1
             }
             ]
         }
@@ -69,7 +75,8 @@ class CourseViewSet(ModelViewSet):
         ```
         {
             "id": 7,
-            "name": "MECATRONICA"
+            "name": "MECATRONICA",
+            "campus": 2
         }
         ```
         """
@@ -90,7 +97,8 @@ class CourseViewSet(ModelViewSet):
         ```
         {
         "id": 7,
-        "name": "MECATRONICA"
+        "name": "MECATRONICA",
+        "campus": 2
         }
         ```
         """
@@ -111,7 +119,8 @@ class CourseViewSet(ModelViewSet):
         ```
         {
             "id": 7,
-            "name": "CIVIL"
+            "name": "CIVIL",
+            "campus": 2
         }
         ```
         """
@@ -133,7 +142,8 @@ class CourseViewSet(ModelViewSet):
         ```
         {
             "id": 7,
-            "name": "CIVIL"
+            "name": "CIVIL",
+            "campus": 2
         }
         ```
         """
