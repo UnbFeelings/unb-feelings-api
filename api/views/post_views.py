@@ -291,11 +291,9 @@ class PostViewSet(ModelViewSet):
         for subject in Subject.objects.all():
             emotion_count = get_subject_emotions_count(subject)
             if not emotion_count.empty():
-                print('Adding: {}'.format(emotion_count))
                 subjects_emotions_count_list.append(emotion_count)
 
         serializer = SubjectEmotionsCountSerializer(subjects_emotions_count_list, many=True)
-        print('data = {}'.format(serializer.data))
         return Response(serializer.data)
 
 def get_subject_emotions_count(subject):

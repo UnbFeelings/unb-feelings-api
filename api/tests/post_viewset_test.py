@@ -133,3 +133,18 @@ class PostTestCase(APITestCase, TestCheckMixin):
         self.assertEqual(200, response.status_code)
         for post in response.data:
             self.assertEqual(False, 'content' in post)
+
+    def test_subjects_emotions_count(self):
+        """
+        Subjects emotions count
+        """
+        client = APIClient()
+        endpoint = 'api/posts/subjects_posts_count/'
+        response = client.get(endpoint)
+
+        print('\n' * 5)
+        print('response = {}'.format(response))
+        print('type(response) = {}'.format(type(response)))
+
+        self.assertEqual(200, response.status_code)
+        self.assertEquals(True, False)
