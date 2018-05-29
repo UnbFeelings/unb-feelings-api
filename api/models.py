@@ -99,6 +99,23 @@ class Post(models.Model):
         return out
 
 
+class SubjectEmotionsCount():
+
+    def __init__(self, subject_name, good_count = 0, bad_count = 0):
+        self.subject_name = subject_name
+        self.good_count = good_count
+        self.bad_count = bad_count
+
+    def __str__(self):
+        count = {'good': self.good_count,
+                      'bad': self.bad_count}
+        out = '({}, {})'.format(self.subject_name, count)
+        return out
+
+    def empty(self):
+        return self.bad_count == self.good_count == 0
+
+
 def validate_post_emotion_choice(sender, instance, **kwargs):
     valid_emotions = [t[0] for t in sender.EMOTIONS]
 

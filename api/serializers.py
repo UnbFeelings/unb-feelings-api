@@ -122,3 +122,9 @@ class PostSerializer(serializers.ModelSerializer):
             return context.get('request', None)
 
         return None
+
+class SubjectEmotionsCountSerializer(serializers.Serializer):
+
+    subject_name = serializers.CharField(max_length=200)
+    good_count = serializers.IntegerField(min_value=0)
+    bad_count = serializers.IntegerField(min_value=0)

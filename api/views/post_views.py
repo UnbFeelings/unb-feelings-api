@@ -4,8 +4,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, list_route
 from rest_framework.response import Response
 
-from api.serializers import PostSerializer
-from api.models import Post, Student, Subject
+from api.serializers import PostSerializer, SubjectEmotionsCountSerializer
+from api.models import Post, Student, Subject, SubjectEmotionsCount
 from api.permissions import PostPermission
 
 
@@ -263,3 +263,58 @@ class PostViewSet(ModelViewSet):
 
             data.is_valid()
             return Response(data.data)
+
+    @list_route(
+        permission_classes=[],
+        methods=['GET'],
+        url_path='subjects_posts_count')
+    def subjects_posts(self, request):
+        """
+        Returns posts's emotion counting for all subjects that have at least one post about it
+        ---
+        Response example:
+        ```
+        [
+          {
+            "subject_name": Calculo 1,
+            "good_count": 13,
+            "good_count": 2,
+          }
+        ]
+        ```
+        """
+
+        from datetime import datetime
+        print('calling subject_posts view at {}'.format(datetime.now()))
+
+        subjects_emotions_count_list = []
+        for subject in Subject.objects.all():
+            emotion_count = get_subject_emotions_count(subject)
+            if not emotion_count.empty():
+                print('Adding: {}'.format(emotion_count))
+                subjects_emotions_count_list.append(emotion_count)
+
+        serializer = SubjectEmotionsCountSerializer(subjects_emotions_count_list, many=True)
+        print('data = {}'.format(serializer.data))
+        return Response(serializer.data)
+
+def get_subject_emotions_count(subject):
+    assert isinstance(subject, Subject)
+
+    subject_posts = Post.objects.filter(subject=subject)
+    subject_emotions = [post.emotion for post in subject_posts]
+
+    from collections import Counter
+
+    count = Counter(subject_emotions)
+
+    for emotion_choice in Post.EMOTIONS:
+        emotion = emotion_choice[0]
+        if emotion not in count:
+            count[emotion] = 0
+
+    subject_emotions_count = SubjectEmotionsCount(subject.name,
+                            good_count=count['g'], bad_count=count['b'])
+
+    return subject_emotions_count
+
