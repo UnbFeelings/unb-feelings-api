@@ -44,7 +44,7 @@ class TagViewSet(ModelViewSet):
         Body example:
         ```
         {
-          "description": "educacao",
+          "description": "educacao"
         }
         ```
         Response example:

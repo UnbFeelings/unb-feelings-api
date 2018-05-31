@@ -36,7 +36,8 @@ class StudentViewSet(ModelViewSet):
               "email": "johndoe_1@email.com",
               "course": {
                 "id": 1,
-                "name": "Engenharia de Software"
+                "name": "Engenharia de Software",
+                "campus": 1
               }
             },
             {
@@ -44,7 +45,8 @@ class StudentViewSet(ModelViewSet):
               "email": "johndoe_2@email.com",
               "course": {
                 "id": 3,
-                "name": "Engenharia Eletrônica"
+                "name": "Engenharia Eletrônica",
+                "campus": 1
               }
             }
           ]
@@ -77,7 +79,8 @@ class StudentViewSet(ModelViewSet):
           "email": "johndoe@email.com",
           "course": {
             "id": 1,
-            "name": "Engenharia de Software"
+            "name": "Engenharia de Software",
+            "campus": 1
           }
         }
         ```
@@ -106,7 +109,8 @@ class StudentViewSet(ModelViewSet):
           "email": "johndoe@email.com",
           "course": {
             "id": 1,
-            "name": "Engenharia de Software"
+            "name": "Engenharia de Software",
+            "campus": 1
           }
         }
         ```
@@ -134,7 +138,8 @@ class StudentViewSet(ModelViewSet):
           "email": "string@email.com",
           "course": {
             "id": 1,
-            "name": "Engenharia de Software"
+            "name": "Engenharia de Software",
+            "campus": 1
           }
         }
         ```
@@ -162,7 +167,8 @@ class StudentViewSet(ModelViewSet):
           "email": "string@email.com",
           "course": {
             "id": 3,
-            "name": "Engenharia Eletrônica"
+            "name": "Engenharia Eletrônica",
+            "campus": 1
           }
         }
         ```
