@@ -32,12 +32,16 @@ class PostViewSet(ModelViewSet):
                 {
                     "id": 1,
                     "author": 1,
-                    "content": "asdfasd",
                     "subject": 15,
-                    "emotion":"g",
                     "tag": [
-                        1
-                    ]
+                        {
+                            "id": 1,
+                            "description": "TAG1",
+                            "quantity": 2
+                        }
+                    ],
+                    "emotion":"g",
+                    "created_at": "2018-05-23T00:20:22.344509Z"
                 }
             ]
         }
@@ -53,27 +57,47 @@ class PostViewSet(ModelViewSet):
         Body example:
         ```
         {
-            "author": pedro_1195@hotmail.com,
-            "content": "Quero morrer",
-            "subject": COMBUSTIVEIS E BIOCOMBUSTIVEIS,
-            "emotion": "b",
-            "tag": [
-                TAG1,
-                educacao
+            "count": 1,
+            "next": null,
+            "previous": null,
+            "results": [
+                {
+                    "author": pedro_1195@hotmail.com,
+                    "subject": COMBUSTIVEIS E BIOCOMBUSTIVEIS,
+                    "tag": [
+                            {
+                                "id": 1,
+                                "description": "TAG1",
+                                "quantity": 2
+                            }
+                    ],
+                    "emotion": "b",
+                    "created_at": "2018-05-23T00:20:22.344509Z"
+                }
             ]
         }
         ```
         Response example:
         ```
         {
-            "id": 2,
-            "author": 1,
-            "content": "Quero morrer",
-            "subject": 11,
-            "emotion":"b",
-            "tag": [
-                1,
-                2
+            "count": 1,
+            "next": null,
+            "previous": null,
+            "results": [
+                {
+                    "id": 2,
+                    "author": 1,
+                    "subject": 11,
+                    "tag": [
+                            {
+                                "id": 1,
+                                "description": "TAG1",
+                                "quantity": 2
+                            }
+                    ],
+                    "emotion":"b",
+                    "created_at": "2018-05-23T00:20:22.344509Z"
+                }
             ]
         }
         ```
@@ -95,13 +119,24 @@ class PostViewSet(ModelViewSet):
         Response example:
         ```
         {
-            "id": 1,
-            "author": 1,
-            "content": "asdfasd",
-            "subject": 15,
-            "emotion": "g",
-            "tag": [
-                1
+            "count": 1,
+            "next": null,
+            "previous": null,
+            "results": [
+                {
+                    "id": 1,
+                    "author": 1,
+                    "subject": 15,
+                    "tag": [
+                            {
+                                "id": 1,
+                                "description": "TAG1",
+                                "quantity": 2
+                            }
+                    ],
+                    "emotion": "g",
+                    "created_at": "2018-05-23T00:20:22.344509Z"
+                }
             ]
         }
         ```
@@ -122,17 +157,28 @@ class PostViewSet(ModelViewSet):
         Response example:
         ```
         {
-        {
-            "id": 1,
-            "author": 1,
-            "content": "Melhor aula do mundo",
-            "subject": 15,
-            "emotion": "g",
-            "tag": [
-                1
+            "count": 1,
+            "next": null,
+            "previous": null,
+            "results": [
+                {
+                    "id": 1,
+                    "author": 1,
+                    "content": "Melhor aula do mundo",
+                    "subject": 15,
+                    "tag": [
+                            {
+                                "id": 1,
+                                "description": "TAG1",
+                                "quantity": 2
+                            }
+                    ],           
+                    "emotion": "g",
+                    "created_at": "2018-05-23T00:20:22.344509Z"
+                }
             ]
         }
-        }
+
         ```
         """
         response = \
@@ -145,34 +191,54 @@ class PostViewSet(ModelViewSet):
         ---
         Body example:
         ```
-        {
           {
-              "author": hpedro1195@gmail.com,
-              "content": "Pior aula do mundo",
-              "subject": 15,
-              "emotion": "b",
-              "tag": [
-                TAG1,
-                educacao
+              "count": 1,
+              "next": null,
+              "previous": null,
+              "results": [
+                {
+                    "author": hpedro1195@gmail.com,
+                    "content": "Pior aula do mundo",
+                    "subject": 15,
+                    "tag": [
+                            {
+                                "id": 1,
+                                "description": "TAG1",
+                                "quantity": 2
+                            }
+                    ],
+                    "emotion": "b",
+                    "created_at": "2018-05-23T00:20:22.344509Z"
+                }
               ]
           }
-        }
+    
         ```
         Response example:
         ```
-        {
           {
-              "id": 1,
-              "author": hpedro1195@gmail.com,
-              "content": "Pior aula do mundo",
-              "subject": 15,
-              "emotion": "b",
-              "tag": [
-                1,
-                2
+              "count": 1,
+              "next": null,
+              "previous": null,
+              "results": [
+                {
+                    "id": 1,
+                    "author": hpedro1195@gmail.com,
+                    "content": "Pior aula do mundo",
+                    "subject": 15,
+                    "tag": [
+                            {
+                                "id": 1,
+                                "description": "TAG1",
+                                "quantity": 2
+                            }
+                    ],
+                    "emotion": "b",
+                    "created_at": "2018-05-23T00:20:22.344509Z"
+                }
               ]
           }
-        }
+
         ```
         """
         response = super(PostViewSet, self).update(request, pk, **kwargs)
@@ -186,21 +252,34 @@ class PostViewSet(ModelViewSet):
         """
         API endpoint that gets the posts of a given user
         ---
+        The "content" camp don't show up if you're not the loged user
+        ---
         Response example:
         ```
-        [
+        
           {
-            "id": 1,
-            "author": hpedro1195@gmail.com,
-            "content": "Pior aula do mundo",
-            "subject": 15,
-            "emotion": "b",
-            "tag": [
-              1,
-              2
+            "count": 1,
+            "next": null,
+            "previous": null,
+            "results": [
+                {
+                    "id": 1,
+                    "author": hpedro1195@gmail.com,
+                    "content": "Pior aula do mundo",
+                    "subject": 15,
+                    "tag": [
+                            {
+                                "id": 1,
+                                "description": "TAG1",
+                                "quantity": 2
+                            }
+                    ],
+                    "emotion": "b",
+                    "created_at": "2018-05-23T00:20:22.344509Z"
+                }
             ]
           }
-        ]
+        
         ```
         """
         user = get_object_or_404(Student, pk=user_id)
@@ -230,20 +309,29 @@ class PostViewSet(ModelViewSet):
         API endpoint that getts the posts of a given subject
         ---
         Response example:
-        ```
-        [
+        ``` 
           {
-            "id": 1,
-            "author": hpedro1195@gmail.com,
-            "content": "Pior aula do mundo",
-            "subject": 15,
-            "emotion": "b",
-            "tag": [
-              1,
-              2
+            "count": 1,
+            "next": null,
+            "previous": null,
+            "results": [
+                {
+                    "id": 1,
+                    "author": hpedro1195@gmail.com,
+                    "subject": 15,
+                    "tag": [
+                            {
+                                "id": 1,
+                                "description": "TAG1",
+                                "quantity": 2
+                            }
+                    ],
+                    "emotion": "b",
+                    "created_at": "2018-05-23T00:20:22.344509Z"
+                }
             ]
           }
-        ]
+    
         ```
         """
         subject = get_object_or_404(Subject, pk=subject_id)
