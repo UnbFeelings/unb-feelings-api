@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from api.models import Post, Subject, Student
+from api.serializers import PostSerializer
 
 
 class DiagnosisViewSet(ModelViewSet):
@@ -41,7 +42,18 @@ class DiagnosisViewSet(ModelViewSet):
                 {
                     "id": 1,
                     "author_id": 3,
-                    "subject_id": 262,
+                    "subject": {
+                        "id": 15,
+                        "name": "Calculo 1",
+                        "course": 1
+                    },
+                    "tag": [
+                        {
+                            "id": 1,
+                            "description": "boladao",
+                            "quantity": 1
+                        },
+                    ]
                     "emotion": "g",
                     "created_at": "2018-05-23T00:20:22.344509Z"
                 }
@@ -58,26 +70,18 @@ class DiagnosisViewSet(ModelViewSet):
 
         # only posts from the last week
         posts = get_posts_by_target(target, target_id)
+        days = (
+            "sunday", "monday", "tuesday", "wednesday", "thursday",
+            "friday", "saturday"
+        )
+        diagnosis = dict()
 
-        diagnosis = {
-            "sunday": posts.filter(created_at__week_day=1).values(),
-            "monday": posts.filter(created_at__week_day=2).values(),
-            "tuesday": posts.filter(created_at__week_day=3).values(),
-            "wednesday": posts.filter(created_at__week_day=4).values(),
-            "thursday": posts.filter(created_at__week_day=5).values(),
-            "friday": posts.filter(created_at__week_day=6).values(),
-            "saturday": posts.filter(created_at__week_day=7).values(),
-        }
-
-        # I didn't found a way to remove a column right on query
-        # So this is workaround to remove "content" from the posts
-        for day in diagnosis.keys():
-            new_day = map(lambda post: {
-                    k: post[k] for k in post.keys() if k != "content"
-                },
-                diagnosis[day])
-
-            diagnosis[day] = list(new_day)
+        for (i, day) in enumerate(days):
+            week_day = i+1
+            data = posts.filter(created_at__week_day=week_day)
+            serialized = PostSerializer(data=data, many=True)
+            serialized.is_valid()
+            diagnosis[day] = serialized.data
 
         return Response(diagnosis)
 
@@ -92,20 +96,22 @@ def get_posts_by_target(target=None, target_id=None):
         * student
         * unb
     """
+    posts_query = Post.objects.select_related('subject').all()
+
     if target is None:  # is no target is given, return all unb feelings
-        return Post.objects.all().filter(
+        return posts_query.filter(
             created_at__gt=timezone.now() - timedelta(days=8))
 
     if target == 'subject':
         subject = get_object_or_404(Subject, pk=target_id)
 
-        return Post.objects.all().filter(
+        return posts_query.filter(
             subject=subject, created_at__gt=timezone.now() - timedelta(days=8))
 
     if target == 'student':
         student = get_object_or_404(Student, pk=target_id)
 
-        return Post.objects.all().filter(
+        return posts_query.filter(
             author=student, created_at__gt=timezone.now() - timedelta(days=8))
 
     # if an invalid target is given return an 404 response
