@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import serializers
 from rest_framework.request import Request
 
@@ -36,6 +38,18 @@ class SubjectSerializer(serializers.ModelSerializer):
             'name',
             'course',
         ]
+
+    def to_internal_value(self, data):
+        """
+        Needed for PostSerializer create posts passing only the Subject id.
+        Otherwise every time a Post is created a new Subject is alse created.
+        """
+        if isinstance(data, int):
+            return get_object_or_404(Subject.objects.all(), pk=data)
+        elif isinstance(data, dict) and data.get('id'):
+            return get_object_or_404(Subject.objects.all(), pk=data.get('id'))
+
+        return super(SubjectSerializer, self).to_internal_value(data)
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -80,6 +94,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    subject = SubjectSerializer()
     tag = TagSerializer(many=True, read_only=True)
 
     class Meta:

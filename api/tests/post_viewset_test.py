@@ -78,7 +78,7 @@ class PostTestCase(APITestCase, TestCheckMixin):
 
         self.assertEqual(201, response.status_code)
         self.assertEqual(data["author"], response.data['author'])
-        self.assertEqual(data["subject"], response.data['subject'])
+        self.assertEqual(data["subject"], response.data['subject']['id'])
         self.assertEqual(data["emotion"], response.data['emotion'])
 
     def test_user_update_posts(self):

@@ -32,7 +32,11 @@ class PostViewSet(ModelViewSet):
                 {
                     "id": 1,
                     "author": 1,
-                    "subject": 15,
+                    "subject": {
+                        "id": 15,
+                        "name": "Calculo 1",
+                        "course": 1
+                    },
                     "tag": [
                         {
                             "id": 1,
@@ -63,7 +67,7 @@ class PostViewSet(ModelViewSet):
             "results": [
                 {
                     "author": pedro_1195@hotmail.com,
-                    "subject": COMBUSTIVEIS E BIOCOMBUSTIVEIS,
+                    "subject": 1,
                     "tag": [
                             {
                                 "id": 1,
@@ -87,7 +91,11 @@ class PostViewSet(ModelViewSet):
                 {
                     "id": 2,
                     "author": 1,
-                    "subject": 11,
+                    "subject": {
+                        "id": 1,
+                        "name": "Calculo 1",
+                        "course": 1
+                    },
                     "tag": [
                             {
                                 "id": 1,
@@ -126,7 +134,11 @@ class PostViewSet(ModelViewSet):
                 {
                     "id": 1,
                     "author": 1,
-                    "subject": 15,
+                     "subject": {
+                        "id": 15,
+                        "name": "Calculo 1",
+                        "course": 1
+                    },
                     "tag": [
                             {
                                 "id": 1,
@@ -165,14 +177,18 @@ class PostViewSet(ModelViewSet):
                     "id": 1,
                     "author": 1,
                     "content": "Melhor aula do mundo",
-                    "subject": 15,
+                     "subject": {
+                        "id": 15,
+                        "name": "Calculo 1",
+                        "course": 1
+                    },
                     "tag": [
                             {
                                 "id": 1,
                                 "description": "TAG1",
                                 "quantity": 2
                             }
-                    ],           
+                    ],
                     "emotion": "g",
                     "created_at": "2018-05-23T00:20:22.344509Z"
                 }
@@ -199,7 +215,11 @@ class PostViewSet(ModelViewSet):
                 {
                     "author": hpedro1195@gmail.com,
                     "content": "Pior aula do mundo",
-                    "subject": 15,
+                     "subject": {
+                        "id": 15,
+                        "name": "Calculo 1",
+                        "course": 1
+                    },
                     "tag": [
                             {
                                 "id": 1,
@@ -212,7 +232,7 @@ class PostViewSet(ModelViewSet):
                 }
               ]
           }
-    
+
         ```
         Response example:
         ```
@@ -225,7 +245,11 @@ class PostViewSet(ModelViewSet):
                     "id": 1,
                     "author": hpedro1195@gmail.com,
                     "content": "Pior aula do mundo",
-                    "subject": 15,
+                     "subject": {
+                        "id": 15,
+                        "name": "Calculo 1",
+                        "course": 1
+                    },
                     "tag": [
                             {
                                 "id": 1,
@@ -256,7 +280,7 @@ class PostViewSet(ModelViewSet):
         ---
         Response example:
         ```
-        
+
           {
             "count": 1,
             "next": null,
@@ -266,7 +290,11 @@ class PostViewSet(ModelViewSet):
                     "id": 1,
                     "author": hpedro1195@gmail.com,
                     "content": "Pior aula do mundo",
-                    "subject": 15,
+                     "subject": {
+                        "id": 15,
+                        "name": "Calculo 1",
+                        "course": 1
+                    },
                     "tag": [
                             {
                                 "id": 1,
@@ -279,7 +307,7 @@ class PostViewSet(ModelViewSet):
                 }
             ]
           }
-        
+
         ```
         """
         user = get_object_or_404(Student, pk=user_id)
@@ -299,7 +327,7 @@ class PostViewSet(ModelViewSet):
 
             data.is_valid()
             return Response(data.data)
-            
+
     @list_route(
         permission_classes=[],
         methods=['GET'],
@@ -309,7 +337,7 @@ class PostViewSet(ModelViewSet):
         API endpoint that getts the posts of a given subject
         ---
         Response example:
-        ``` 
+        ```
           {
             "count": 1,
             "next": null,
@@ -318,7 +346,11 @@ class PostViewSet(ModelViewSet):
                 {
                     "id": 1,
                     "author": hpedro1195@gmail.com,
-                    "subject": 15,
+                     "subject": {
+                        "id": 15,
+                        "name": "Calculo 1",
+                        "course": 1
+                    },
                     "tag": [
                             {
                                 "id": 1,
@@ -331,7 +363,7 @@ class PostViewSet(ModelViewSet):
                 }
             ]
           }
-    
+
         ```
         """
         subject = get_object_or_404(Subject, pk=subject_id)
@@ -358,7 +390,8 @@ class PostViewSet(ModelViewSet):
         url_path='subjects_posts_count')
     def subjects_posts(self, request):
         """
-        Returns posts's emotion counting for all subjects that have at least one post about it
+        Returns posts's emotion counting for all subjects that have at least
+        one post about it
         ---
         Response example:
         ```
@@ -372,17 +405,16 @@ class PostViewSet(ModelViewSet):
         ```
         """
 
-        from datetime import datetime
-        print('calling subject_posts view at {}'.format(datetime.now()))
-
         subjects_emotions_count_list = []
         for subject in Subject.objects.all():
             emotion_count = get_subject_emotions_count(subject)
             if not emotion_count.empty():
                 subjects_emotions_count_list.append(emotion_count)
 
-        serializer = SubjectEmotionsCountSerializer(subjects_emotions_count_list, many=True)
+        serializer = SubjectEmotionsCountSerializer(
+            subjects_emotions_count_list, many=True)
         return Response(serializer.data)
+
 
 def get_subject_emotions_count(subject):
     assert isinstance(subject, Subject)
@@ -399,8 +431,7 @@ def get_subject_emotions_count(subject):
         if emotion not in count:
             count[emotion] = 0
 
-    subject_emotions_count = SubjectEmotionsCount(subject.name,
-                            good_count=count['g'], bad_count=count['b'])
+    subject_emotions_count = SubjectEmotionsCount(
+        subject.name, good_count=count['g'], bad_count=count['b'])
 
     return subject_emotions_count
-
