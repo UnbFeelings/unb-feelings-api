@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from rest_framework.test import APITestCase, APIRequestFactory, APIClient
+from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth import get_user_model
 
 from api.models import Campus, Course
@@ -41,4 +41,5 @@ class UserRegistrationTestCase(APITestCase):
         response = client.post('/api/users/', user_data)
 
         self.assertEqual(400, response.status_code)
-        self.assertEqual("Este campo é obrigatório.", response.data["email"][0])
+        self.assertEqual("Este campo é obrigatório.",
+                         response.data["email"][0])

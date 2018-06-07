@@ -6,8 +6,8 @@ from django.contrib.auth import get_user_model
 from api.models import Campus, Course, Subject, Post
 from api.tests.helpers import create_test_user, TestCheckMixin
 
-
 UserModel = get_user_model()
+
 
 class PostTestCase(APITestCase, TestCheckMixin):
     @create_test_user(email="test@user.com", password="testuser")
@@ -26,15 +26,21 @@ class PostTestCase(APITestCase, TestCheckMixin):
         self.user = UserModel.objects.get(email="test@user.com")
 
         Post.objects.get_or_create(
-            content="Allahu Akbar !", author=self.user,
-            subject=self.subject, emotion="g")[0]
+            content="Allahu Akbar !",
+            author=self.user,
+            subject=self.subject,
+            emotion="g")[0]
 
         Post.objects.get_or_create(
-            content="Good good!", author=self.user,
-            subject=self.ted, emotion="g")[0]
+            content="Good good!",
+            author=self.user,
+            subject=self.ted,
+            emotion="g")[0]
         Post.objects.get_or_create(
-            content="Bad Bad!", author=self.user,
-            subject=self.ted, emotion="b")[0]
+            content="Bad Bad!",
+            author=self.user,
+            subject=self.ted,
+            emotion="b")[0]
 
     def test_anyone_can_get_list(self):
         """
@@ -155,12 +161,13 @@ class PostTestCase(APITestCase, TestCheckMixin):
         client = APIClient()
         endpoint = '/api/posts/subjects_posts_count/'
         response = client.get(endpoint)
-        content =  response.json()
+        content = response.json()
 
-        expected_json =   { 'subject_name': 'Teoria da eletronica digital',
-                            'good_count': 1,
-                            'bad_count': 1
-                          }
+        expected_json = {
+            'subject_name': 'Teoria da eletronica digital',
+            'good_count': 1,
+            'bad_count': 1
+        }
 
         self.assertEqual(200, response.status_code)
         self.assertIn(expected_json, content)
@@ -173,15 +180,16 @@ class PostTestCase(APITestCase, TestCheckMixin):
         client = APIClient()
         endpoint = '/api/posts/subjects_posts_count/'
         response = client.get(endpoint)
-        content =  response.json()
+        content = response.json()
 
-        subject_name ='Pratica da eletronica digital'
+        subject_name = 'Pratica da eletronica digital'
         self.assertTrue(Subject.objects.filter(name=subject_name))
 
-        expected_json =   { 'subject_name': subject_name,
-                            'good_count': 0,
-                            'bad_count': 0
-                          }
+        expected_json = {
+            'subject_name': subject_name,
+            'good_count': 0,
+            'bad_count': 0
+        }
 
         self.assertEqual(200, response.status_code)
         self.assertNotIn(expected_json, content)

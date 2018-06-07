@@ -1,6 +1,7 @@
 image: docker
 
 stages:
+  - flake8
   - test
 
 services:
@@ -10,9 +11,20 @@ before_script:
   - apk add --no-cache py-pip
   - pip install docker-compose
 
+flake8:
+  stage: flake8
+  script:
+    - docker-compose -f compose/test/docker-compose.test.yml build
+    - docker-compose -f compose/test/docker-compose.test.yml run unbfeelings-test \
+        pip install -r requirements.txt && flake8 \
+          --exclude .git,__pycache__,compose,.venv,migrations \
+          --max-complexity 10 \
+          --max-line-length 100
+
 test:
   stage: test
   script:
     - docker-compose -f compose/test/docker-compose.test.yml build
     - docker-compose -f compose/test/docker-compose.test.yml run unbfeelings-test coverage run --source='.' manage.py test
     - docker-compose -f compose/test/docker-compose.test.yml run unbfeelings-test coveralls
+
