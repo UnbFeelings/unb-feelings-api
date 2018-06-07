@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, list_route
 from rest_framework.response import Response
 
 from api.serializers import PostSerializer, SubjectEmotionsCountSerializer
-from api.models import Post, Student, Subject, SubjectEmotionsCount
+from api.models import Post, Student, Subject, SubjectEmotionsCount, Tag
 from api.permissions import PostPermission
 
 
@@ -111,6 +111,24 @@ class PostViewSet(ModelViewSet):
         ```
         """
         response = super(PostViewSet, self).create(request)
+
+        if not response.data.get('created_at', None):
+            return response
+
+        post = Post.objects.get(pk=response.data.get('id'))
+        tags = request.data.get('tags', "")
+        response.data['tag'] = []
+
+        for tag_text in tags.split('#'):
+            description = tag_text.strip().replace(',', "")
+
+            if len(tag_text) > 0:
+                tag, created = Tag.objects.get_or_create(
+                    description=description)
+                post.tag.add(tag)
+                post.save()
+                response.data['tag'].append(tag.id)
+
         return response
 
     def destroy(self, request, pk=None):
