@@ -7,30 +7,31 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
+# noqa: F401
 
 # Not remove the imports.
-from unbfeelings.config.apps import (
+from unbfeelings.config.apps import (  # noqa: F401
     PRODUCTION_APPS, DEVELOPMENT_APPS
 )
-from unbfeelings.config.database import (
+from unbfeelings.config.database import (  # noqa: F401
     DEVELOPMENT_DB, PRODUCTION_DB
 )
-from unbfeelings.config.files import (
+from unbfeelings.config.files import (  # noqa: F401
     STATIC_ROOT, STATIC_URL, MEDIA_ROOT, MEDIA_URL
 )
-from unbfeelings.config.i18n import (
+from unbfeelings.config.i18n import (  # noqa: F401
     LANGUAGE_CODE, TIME_ZONE, USE_I18N, USE_L10N, USE_TZ
 )
-from unbfeelings.config.rest import (
+from unbfeelings.config.rest import (  # noqa: F401
     REST_FRAMEWORK, JWT_AUTH, SWAGGER_SETTINGS
 )
-from unbfeelings.config.authentication import (
+from unbfeelings.config.authentication import (  # noqa: F401
     AUTHENTICATION_BACKENDS, AUTH_USER_MODEL
 )
-from unbfeelings.config.middleware import MIDDLEWARE
-from unbfeelings.config.security import SECRET_KEY
-from unbfeelings.config.templates import TEMPLATES
-from unbfeelings.config.password import AUTH_PASSWORD_VALIDATORS
+from unbfeelings.config.middleware import MIDDLEWARE  # noqa: F401
+from unbfeelings.config.security import SECRET_KEY  # noqa: F401
+from unbfeelings.config.templates import TEMPLATES  # noqa: F401
+from unbfeelings.config.password import AUTH_PASSWORD_VALIDATORS  # noqa: F401
 import os
 
 MODE_ENVIROMENT = os.getenv("MODE_ENVIROMENT", "development")

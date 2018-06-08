@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import api_view, list_route
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
 from api.serializers import PostSerializer, SubjectEmotionsCountSerializer

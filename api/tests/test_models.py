@@ -11,9 +11,10 @@ class SubjectEmotionsCountTestCase(APITestCase):
         good_count = 3
         bad_count = 1
 
-        emotions_count = SubjectEmotionsCount(subject_name=subject_name,
-                                              good_count=good_count,
-                                              bad_count=bad_count)
+        emotions_count = SubjectEmotionsCount(
+            subject_name=subject_name,
+            good_count=good_count,
+            bad_count=bad_count)
 
         emotions_count_str = emotions_count.__str__()
         expected_str = '(Computacao basica, {\'good\': 3, \'bad\': 1})'

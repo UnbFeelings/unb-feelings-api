@@ -3,9 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.request import Request
 
-from .models import (
-    Campus, Course, Post, Student, Subject, Tag
-)
+from .models import (Campus, Course, Post, Student, Subject, Tag)
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -55,12 +53,7 @@ class SubjectSerializer(serializers.ModelSerializer):
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = [
-            'id',
-            'email',
-            'password',
-            'course'
-        ]
+        fields = ['id', 'email', 'password', 'course']
 
         extra_kwargs = {
             'password': {
@@ -90,7 +83,8 @@ class TagSerializer(serializers.ModelSerializer):
     def get_or_create(self):
         defaults = self.validated_data.copy()
         identifier = defaults.pop('description')
-        return Tag.objects.get_or_create(description=identifier, defaults=defaults)
+        return Tag.objects.get_or_create(
+            description=identifier, defaults=defaults)
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -125,7 +119,9 @@ class PostSerializer(serializers.ModelSerializer):
                 return  # The user can see his Posts content data
 
         # For any other user remove the content
-        exclude_fields = {'content', }
+        exclude_fields = {
+            'content',
+        }
 
         for field in exclude_fields:
             self.fields.pop(field)
@@ -138,8 +134,8 @@ class PostSerializer(serializers.ModelSerializer):
 
         return None
 
-class SubjectEmotionsCountSerializer(serializers.Serializer):
 
+class SubjectEmotionsCountSerializer(serializers.Serializer):
     subject_name = serializers.CharField(max_length=200)
     good_count = serializers.IntegerField(min_value=0)
     bad_count = serializers.IntegerField(min_value=0)

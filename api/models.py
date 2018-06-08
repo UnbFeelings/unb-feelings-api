@@ -38,8 +38,7 @@ class Student(AbstractUser):
         _('username'),
         max_length=150,
         unique=False,
-        help_text=_(
-            'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
         validators=[username_validator],
         error_messages={
             'unique': _("A user with that username already exists."),
@@ -100,15 +99,13 @@ class Post(models.Model):
 
 
 class SubjectEmotionsCount():
-
-    def __init__(self, subject_name, good_count = 0, bad_count = 0):
+    def __init__(self, subject_name, good_count=0, bad_count=0):
         self.subject_name = subject_name
         self.good_count = good_count
         self.bad_count = bad_count
 
     def __str__(self):
-        count = {'good': self.good_count,
-                      'bad': self.bad_count}
+        count = {'good': self.good_count, 'bad': self.bad_count}
         out = '({}, {})'.format(self.subject_name, count)
         return out
 
