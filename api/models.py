@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 
 class Campus(models.Model):
@@ -85,7 +86,10 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         related_name="posts")
     emotion = models.CharField(max_length=1, choices=EMOTIONS, blank=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Foo(models.Model):
+        foo = models.DateField(default=timezone.now)
 
     def __str__(self):
         tags = ['#' + tag.description for tag in self.tag.all()]
