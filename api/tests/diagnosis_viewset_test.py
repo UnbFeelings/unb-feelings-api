@@ -120,7 +120,7 @@ class DiagnosisTestCase(APITestCase):
         self.assertEqual(len(posts), total_posts)
 
 
-class DiagnosisWeeklyCountTestCase(TestCase):
+class DiagnosisWeeklyCountTestCase(APITestCase):
     @create_test_user(email="test_b@user.com", password="testuser")
     def setUp(self):
         self.setup_posts()
@@ -157,6 +157,37 @@ class DiagnosisWeeklyCountTestCase(TestCase):
         this_week_posts = get_last_week_posts()
         invalid_posts = this_week_posts.filter(content__in=out_of_this_week_post_content)
         self.assertEquals(invalid_posts.count(), 0)
+
+    def test_weekly_posts_days_of_the_week(self):
+        client = APIClient()
+        response=client.get('/api/diagnosis/weekly_posts_count/')
+
+        self.assertEqual(200, response.status_code)
+
+        days = (
+            "sunday", "monday", "tuesday", "wednesday", "thursday",
+            "friday", "saturday"
+        )
+
+        response_days = tuple(response.data.keys())
+        self.assertEquals(days, response_days)
+
+    def test_weekly_posts_days_of_the_week_counter(self):
+        client = APIClient()
+        response = client.get('/api/diagnosis/weekly_posts_count/')
+
+        self.assertEqual(200, response.status_code)
+        expected_data = {
+                            'sunday': {'bad_count': 1, 'good_count': 0},
+                            'monday': {'bad_count': 0, 'good_count': 1},
+                            'tuesday': {'bad_count': 1, 'good_count': 0},
+                            'wednesday': {'bad_count': 1, 'good_count': 0},
+                            'thursday': {'bad_count': 0, 'good_count': 1},
+                            'friday': {'bad_count': 1, 'good_count': 0},
+                            'saturday': {'bad_count': 0, 'good_count': 1}
+                        }
+
+        self.assertEquals(response.data, expected_data)
 
     def setup_posts(self):
         student = UserModel.objects.all()[0]
