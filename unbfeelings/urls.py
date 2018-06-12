@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'^api/token-auth/', CustomObtainJWTToken.as_view()),
     url(r'^api/token-refresh/', refresh_jwt_token),
     url(r'^api/anonymous-name/', StudentViewSet.anonymous_name),
-    url(r'^api/diagnosis/', DiagnosisViewSet.diagnosis),
+    path('api/diagnosis/', DiagnosisViewSet.diagnosis),
+    path('api/diagnosis/weekly_posts_count/', DiagnosisViewSet.weekly_count, name='weekly_posts_count'),
 ]

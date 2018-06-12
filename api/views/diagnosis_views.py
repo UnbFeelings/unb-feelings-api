@@ -4,7 +4,7 @@ from django.http import Http404
 from datetime import timedelta
 
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, list_route
 from rest_framework.response import Response
 
 from api.models import Post, Subject, Student
@@ -17,6 +17,7 @@ class DiagnosisViewSet(ModelViewSet):
     API endpoint that allows getting a diagnosis of a student, subject
     or university.
     """
+
 
     @api_view(['GET'])
     def diagnosis(request):
@@ -85,6 +86,45 @@ class DiagnosisViewSet(ModelViewSet):
 
         return Response(diagnosis)
 
+    @api_view(['GET'])
+    def weekly_count(request):
+        """
+        Returns posts's emotion counting for all subjects that have at least
+        one post about it
+        ---
+        Response example:
+        ```
+            example
+        ```
+        """
+                # only posts from the last week
+        posts = get_last_week_posts()
+        days = (
+            "sunday", "monday", "tuesday", "wednesday", "thursday",
+            "friday", "saturday"
+        )
+        diagnosis = dict()
+
+        for (i, day) in enumerate(days):
+            week_day = i+1
+            weekly_counter = dict()
+            weekly_counter['bad_counter'] = posts.filter(created_at__week_day=week_day, emotion='b').count()
+            weekly_counter['good_counter'] = posts.filter(created_at__week_day=week_day, emotion='g').count()
+            diagnosis[day] = weekly_counter
+
+        print('\n' * 5)
+        print('DEBUG')
+        print('diagnosis = {}'.format(diagnosis))
+
+        return Response(diagnosis)
+
+def get_last_week_posts():
+    posts = Post.objects
+    last_week = timezone.now() - timezone.timedelta(days=7)
+    last_week_posts = posts.filter(created_at__gte=last_week)
+
+    return last_week_posts
+
 
 def get_posts_by_target(target=None, target_id=None):
     """
@@ -116,3 +156,5 @@ def get_posts_by_target(target=None, target_id=None):
 
     # if an invalid target is given return an 404 response
     raise Http404
+
+
