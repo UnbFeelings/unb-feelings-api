@@ -89,15 +89,42 @@ class DiagnosisViewSet(ModelViewSet):
     @api_view(['GET'])
     def weekly_count(request):
         """
-        Returns posts's emotion counting for all subjects that have at least
-        one post about it
+            Return the amount of good and bad posts, between all posts, for every day of the week.
         ---
         Response example:
         ```
-            example
+        {
+            "sunday": {
+                "bad_count": 1,
+                "good_count": 4
+            },
+            "monday": {
+                "bad_count": 5,
+                "good_count": 3
+            },
+            "tuesday": {
+                "bad_count": 9,
+                "good_count": 3
+            },
+            "wednesday": {
+                "bad_count": 1,
+                "good_count": 13
+            },
+            "thursday": {
+                "bad_count": 31,
+                "good_count": 1
+            },
+            "friday": {
+                "bad_count": 0,
+                "good_count": 0
+            },
+            "saturday": {
+                "bad_count": 1,
+                "good_count": 0
+            }
+        }
         ```
         """
-                # only posts from the last week
         posts = get_last_week_posts()
         days = (
             "sunday", "monday", "tuesday", "wednesday", "thursday",
@@ -108,13 +135,9 @@ class DiagnosisViewSet(ModelViewSet):
         for (i, day) in enumerate(days):
             week_day = i+1
             weekly_counter = dict()
-            weekly_counter['bad_counter'] = posts.filter(created_at__week_day=week_day, emotion='b').count()
-            weekly_counter['good_counter'] = posts.filter(created_at__week_day=week_day, emotion='g').count()
+            weekly_counter['bad_count'] = posts.filter(created_at__week_day=week_day, emotion='b').count()
+            weekly_counter['good_count'] = posts.filter(created_at__week_day=week_day, emotion='g').count()
             diagnosis[day] = weekly_counter
-
-        print('\n' * 5)
-        print('DEBUG')
-        print('diagnosis = {}'.format(diagnosis))
 
         return Response(diagnosis)
 

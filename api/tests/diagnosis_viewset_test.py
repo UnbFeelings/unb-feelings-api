@@ -5,8 +5,11 @@ from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from api.models import Campus, Post, Course, Subject
+from django.test import TestCase
+
+from api.models import Campus, Post, Course, Subject, Student, Tag
 from api.tests.helpers import create_test_user
+from api.views.diagnosis_views import get_last_week_posts
 
 UserModel = get_user_model()
 
@@ -115,3 +118,63 @@ class DiagnosisTestCase(APITestCase):
         for day in response.data.keys():
             total_posts += len(response.data[day])
         self.assertEqual(len(posts), total_posts)
+
+
+class DiagnosisWeeklyCountTestCase(TestCase):
+    @create_test_user(email="test_b@user.com", password="testuser")
+    def setUp(self):
+        self.setup_posts()
+
+    def test_get_last_week_posts_with_this_week_posts(self):
+        posts = get_last_week_posts()
+        this_week_post_content = ['Day 1', 'Day 2', 'Day 3',]
+        this_week_posts = posts.filter(content__in=this_week_post_content)
+
+        self.assertEquals(len(this_week_post_content), this_week_posts.count())
+
+        now = timezone.now()
+        minimum_acceptable_time = timedelta(days=0)
+        maximum_acceptable_time = timedelta(days=7)
+
+        for post in this_week_posts:
+            post_time = now - post.created_at
+            self.assertTrue(post_time >= minimum_acceptable_time)
+            self.assertTrue(post_time <= maximum_acceptable_time)
+
+    def test_get_last_week_posts_with_out_of_week_posts(self):
+        out_of_this_week_post_content = ['Day 7', 'Day 8', 'Day 9']
+        out_of_this_week_posts = Post.objects.filter(content__in=out_of_this_week_post_content)
+        self.assertEquals(len(out_of_this_week_post_content), out_of_this_week_posts.count())
+
+        now = timezone.now()
+        minimum_acceptable_time = timedelta(days=0)
+        maximum_acceptable_time = timedelta(days=7)
+        for post in out_of_this_week_posts:
+            post_time = now - post.created_at
+            self.assertTrue(post_time >= minimum_acceptable_time)
+            self.assertTrue(post_time > maximum_acceptable_time)
+
+        this_week_posts = get_last_week_posts()
+        invalid_posts = this_week_posts.filter(content__in=out_of_this_week_post_content)
+        self.assertEquals(invalid_posts.count(), 0)
+
+    def setup_posts(self):
+        student = UserModel.objects.all()[0]
+        campus = Campus.objects.get_or_create(name="FGA")[0]
+        course = Course.objects.get_or_create(
+            name="ENGENHARIA", campus=campus)[0]
+
+        self.c1 = Subject.objects.get_or_create(
+            name="Calculo 1", course=course)[0]
+
+        subject = Subject.objects.all()[0]
+
+        days = 10
+        for i in range(days):
+            emotion = Post.EMOTIONS[i % 2][0]
+            content = 'Day {}'.format(i)
+            created_at = timezone.now() - timezone.timedelta(days=i)
+            post = Post.objects.create(
+                content=content, author=student, subject=subject,
+                emotion=emotion,
+                created_at=created_at)
