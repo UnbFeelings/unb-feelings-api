@@ -44,12 +44,13 @@ contents = [
 for i, content in enumerate(contents):
     student = Student.objects.all()[i % Student.objects.count()]
     subject = Subject.objects.all()[i % Subject.objects.count()]
-    emotion = Post.EMOTIONS[i % 2][0]
+    for j in range(5):
+        emotion = Post.EMOTIONS[j % 2][0]
+        post = Post.objects.create(content=content, author=student,
+                subject=subject, emotion=emotion)
+        tags_set = Tag.objects.all()
+        tags = tags_set[i % tags_set.count()]
+        post.tag.add(tags)
+        post.save()
+        print("\tCreating post {}".format(post))
 
-    post = Post.objects.create(
-        content=content, author=student, subject=subject, emotion=emotion)
-    tags = Tag.objects.all()[i:]
-    post.tag.add(*tags)
-    post.save()
-
-    print("\tCreating post {}".format(post))
