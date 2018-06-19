@@ -9,9 +9,7 @@ RUN apt-get update && apt-get install -y \
     python3-setuptools \
     gettext \
     vim \
-    build-essential \
-    postgresql \
-    postgresql-contrib
+    build-essential
 
 # Install pip dependecies
 RUN pip3 install --upgrade pip
@@ -19,11 +17,24 @@ RUN pip3 install --upgrade pip
 # Crate user developer
 RUN useradd -ms /bin/bash developer
 
+# Insert Enviroment variable
+ENV MODE_ENVIROMENT=development
+
 # Create software folder
-RUN mkdir /home/developer/software
-WORKDIR /home/developer/software
 ADD . /home/developer/software
+WORKDIR /home/developer/software
 RUN pip3 install -r requirements.txt
 
+# Expose port 8000
+EXPOSE 8000
+
 # Config user developer
+RUN chown -R developer: /home/developer/software
 USER developer
+
+# Run the script to create database
+#RUN chmod +x compose/dev/dev.sh
+#ENTRYPOINT ["compose/dev/dev.sh"]
+
+# Run the server
+#CMD ["seleep", "infinity"]

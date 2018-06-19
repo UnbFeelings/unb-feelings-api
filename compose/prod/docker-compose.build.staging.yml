@@ -1,0 +1,8 @@
+version: '3'
+services:
+  # Homolog enviroment
+  unbfeelings-hom:
+    build:
+      context: ../../
+      dockerfile: ./compose/prod/Dockerfile
+    image: unbfeelings/api:staging

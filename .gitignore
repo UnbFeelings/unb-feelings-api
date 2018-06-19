@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Vim swp
+*.swp
+
 # Distribution / packaging
 .Python
 env/
@@ -104,8 +107,8 @@ ENV/
 mediafiles
 staticfiles
 
-# Migrations and DB
+# Dev DB
 db.sqlite3
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
+
+# VSCode
+.vscode/*

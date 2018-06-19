@@ -1,0 +1,8 @@
+version: '3'
+services:
+  # Production enviroment
+  unbfeelings-prod:
+    build:
+      context: ../../
+      dockerfile: ./compose/prod/Dockerfile
+    image: unbfeelings/api:latest
