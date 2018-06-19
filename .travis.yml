@@ -22,7 +22,9 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 script:
-  - docker-compose -f docker-compose.test.yml up
+  - docker-compose -f compose/test/docker-compose.test.yml build
+  - docker-compose -f compose/test/docker-compose.test.yml run unbfeelings-test coverage run --source='.' manage.py test
+  - docker-compose -f compose/test/docker-compose.test.yml run unbfeelings-test coveralls
 
 deploy:
   # deploy to staging enviroment
