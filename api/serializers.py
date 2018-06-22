@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.request import Request
 
 from .models import (
-    Campus, Course, Post, Student, Subject, Tag
+    Campus, Course, Post, Student, Subject, Tag, Support
 )
 
 
@@ -143,3 +143,15 @@ class SubjectEmotionsCountSerializer(serializers.Serializer):
     subject_name = serializers.CharField(max_length=200)
     good_count = serializers.IntegerField(min_value=0)
     bad_count = serializers.IntegerField(min_value=0)
+
+
+class SupportSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Support
+        fields = [
+            'student_from',
+            'student_to',
+            'message',
+            'created_at',
+        ]
