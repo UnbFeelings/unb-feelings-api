@@ -150,6 +150,7 @@ class SupportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Support
         fields = [
+            'id',
             'student_from',
             'student_to',
             'message',

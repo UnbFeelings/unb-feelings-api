@@ -1,11 +1,17 @@
-from rest_framework.viewsets import ModelViewSet
+# from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from rest_framework.decorators import list_route
+from rest_framework import viewsets, mixins
 
 from api.serializers import SupportSerializer
 from api.models import Support
 from api.permissions import PostPermission
 
 
-class SupportViewSet(ModelViewSet):
+class SupportViewSet(mixins.RetrieveModelMixin,
+                    mixins.DestroyModelMixin,
+                    viewsets.GenericViewSet,
+                    mixins.CreateModelMixin):
     """Description: SupportViewSet.
 
     API endpoint that allows support to be viewed, created, deleted or edited.
@@ -13,17 +19,55 @@ class SupportViewSet(ModelViewSet):
     queryset = Support.objects.all()
     serializer_class = SupportSerializer
     permission_classes = (PostPermission, )
+    
+    @list_route(
+        permission_classes=[],
+        methods=['GET'],
+        url_path='to_student/(?P<id>\d+)' 
+    )
+    def get_support_made_to_student(self,request,id=None):
+        supports = Support.objects.filter(student_to=id)
+        supports_paginated = self.paginate_queryset(supports)
 
-    def list(self, request):
-        """
-        API endpoint that allows all supports to be viewed.
-        ---
-        Response example:
-        ```
+        if supports_paginated is not None:
+            serializer = SupportSerializer(
+                data=supports_paginated, many=True, context={'request': request})
 
-        ```
-        """
-        return super(SupportViewSet, self).list(request)
+            serializer.is_valid()
+            return self.get_paginated_response(serializer.data)
+        else:
+
+            data = SupportSerializer(
+                data=supports, many=True, context={'request': request})
+
+            data.is_valid()
+            return Response(data.data)
+
+
+    @list_route(
+        permission_classes=[],
+        methods=['GET'],
+        url_path='from_student/(?P<id>\d+)' 
+    )
+    def get_support_made_from_student(self,request,id=None):
+        supports = Support.objects.filter(student_from=id)
+        supports_paginated = self.paginate_queryset(supports)
+
+        if supports_paginated is not None:
+            serializer = SupportSerializer(
+                data=supports_paginated, many=True, context={'request': request})
+
+            serializer.is_valid()
+            return self.get_paginated_response(serializer.data)
+        else:
+
+            data = SupportSerializer(
+                data=supports, many=True, context={'request': request})
+
+            data.is_valid()
+            return Response(data.data)
+
+
 
     def create(self, request):
         """
@@ -69,48 +113,3 @@ class SupportViewSet(ModelViewSet):
         response = super(SupportViewSet, self).retrieve(request, pk)
         return response
 
-    def partial_update(self, request, pk=None, **kwargs):
-        """
-        API endpoint that allows a course to be partial edited.
-        ---
-        Body example:
-        ```
-        {
-            "name": "CIVIL"
-        }
-        ```
-        Response example:
-        ```
-        {
-            "id": 7,
-            "name": "CIVIL",
-            "campus": 2
-        }
-        ```
-        """
-        response = \
-            super(SupportViewSet, self).partial_update(request, pk, **kwargs)
-        return response
-
-    def update(self, request, pk=None, **kwargs):
-        """
-        API endpoint that allows a course to be edited.
-        ---
-        Body example:
-        ```
-        {
-            "name": "CIVIL"
-        }
-        ```
-        Response example:
-        ```
-        {
-            "id": 7,
-            "name": "CIVIL",
-            "campus": 2
-        }
-        ```
-        """
-        response = \
-            super(SupportViewSet, self).update(request, pk, **kwargs)
-        return response
