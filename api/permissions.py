@@ -122,3 +122,36 @@ class PostPermission(permissions.BasePermission):
             return True
 
         return post.author == request.user
+
+
+class GetSupportPermission(permissions.BasePermission):
+    """
+    Admins and the post owner can do all requests.
+    But others users(even anon users) only do GET requests
+    """
+
+    def has_permission(self, request, view):
+        """
+        Permissions for routes:
+            GET /posts/
+            POST /posts/
+        """
+        if not request.user:
+            return False
+
+        if request.user.is_anonymous:
+            return False
+        
+        return True
+
+    def has_object_permission(self, request, view, support):
+        if request.method == "GET":
+            return True
+
+        if not request.user:
+            return False
+
+        if request.user.is_staff:
+            return True
+
+        return support.author == request.user
