@@ -3,7 +3,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-
+from itertools import chain
 
 class Campus(models.Model):
     name = models.CharField(max_length=100)
@@ -56,6 +56,10 @@ class Student(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    def blocks(self):
+        blocker = Block.objects.filter(blocker=self)
+        blocked = Block.objects.filter(blocked=self)
+        return list(chain(blocker, blocked))
 
 class Tag(models.Model):
     description = models.CharField(max_length=200, unique=True)
@@ -127,3 +131,7 @@ def validate_post_emotion_choice(sender, instance, **kwargs):
 
 
 models.signals.pre_save.connect(validate_post_emotion_choice, sender=Post)
+
+class Block(models.Model):
+    blocker = models.ForeignKey(Student, on_delete=None, related_name="blocker")
+    blocked = models.ForeignKey(Student, on_delete=None, related_name="blocked")
