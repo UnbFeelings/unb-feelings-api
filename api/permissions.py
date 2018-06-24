@@ -154,4 +154,4 @@ class GetSupportPermission(permissions.BasePermission):
         if request.user.is_staff:
             return True
 
-        return support.author == request.user
+        return support.student_from == request.user or support.student_to == request.user

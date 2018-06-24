@@ -6,4 +6,4 @@ from .tag_views import TagViewSet  # noqa: F401
 from .post_views import PostViewSet  # noqa: F401
 from .diagnosis_views import DiagnosisViewSet  # noqa: F401
 from .custom_obtain_jwt_token import CustomObtainJWTToken  # noqa: F401
-from .support_views import SupportViewSet  # noqa: F401
+from .support_views import SupportViewSet, SupportCreate  # noqa: F401

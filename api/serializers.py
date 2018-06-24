@@ -138,6 +138,7 @@ class PostSerializer(serializers.ModelSerializer):
 
         return None
 
+
 class SubjectEmotionsCountSerializer(serializers.Serializer):
 
     subject_name = serializers.CharField(max_length=200)
@@ -146,13 +147,23 @@ class SubjectEmotionsCountSerializer(serializers.Serializer):
 
 
 class SupportSerializer(serializers.ModelSerializer):
+    student_from = serializers.PrimaryKeyRelatedField(read_only=True)
+    student_to = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Support
         fields = [
             'id',
-            'student_from',
-            'student_to',
             'message',
             'created_at',
+            'student_from',
+            'student_to'
         ]
+
+    def create(self, validated_data):
+        student_from = self.context['request'].user
+        student_to = self.context['view'].kwargs['pk']
+        validated_data['student_from'] = student_from
+        validated_data['student_to'] = Student.objects.get(pk=int(student_to))
+
+        return Support.objects.create(**validated_data)

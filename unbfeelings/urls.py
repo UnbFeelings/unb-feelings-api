@@ -7,7 +7,7 @@ from rest_framework_swagger.views import get_swagger_view
 
 from api.views import (CampusViewSet, CourseViewSet, CustomObtainJWTToken,
                        DiagnosisViewSet, PostViewSet, StudentViewSet,
-                       SubjectViewSet, TagViewSet, SupportViewSet)
+                       SubjectViewSet, TagViewSet, SupportViewSet, SupportCreate)
 
 schema_view = get_swagger_view(title='UnB Feelings API')
 
@@ -20,8 +20,10 @@ ROUTER.register(r'posts', PostViewSet, base_name='posts')
 ROUTER.register(r'campus', CampusViewSet, base_name='campus')
 ROUTER.register(r'support', SupportViewSet, base_name='support')
 
+
 urlpatterns = [
     url(r'^$', schema_view),
+    url(r'^api/support/(?P<pk>\d+)/', SupportCreate.as_view()),
     url(r'^api/', include(ROUTER.urls)),
     url(r'^api/token-auth/', CustomObtainJWTToken.as_view()),
     url(r'^api/token-refresh/', refresh_jwt_token),
