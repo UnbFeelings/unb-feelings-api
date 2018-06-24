@@ -58,8 +58,17 @@ class Student(AbstractUser):
 
     def blocks(self):
         blocker = Block.objects.filter(blocker=self)
+        blockeds_users = []
+
+        for user_block in blocker:
+            blockeds_users.append(user_block.blocked)
+
         blocked = Block.objects.filter(blocked=self)
-        return list(chain(blocker, blocked))
+        for user_block in blocked:
+            blockeds_users.append(user_block.blocked)
+
+        return blockeds_users
+
 
 class Tag(models.Model):
     description = models.CharField(max_length=200, unique=True)

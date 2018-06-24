@@ -1,3 +1,4 @@
+import pprint
 from django.shortcuts import get_object_or_404
 
 from rest_framework.viewsets import ModelViewSet
@@ -7,7 +8,6 @@ from rest_framework.response import Response
 from api.serializers import PostSerializer, SubjectEmotionsCountSerializer
 from api.models import Post, Student, Subject, SubjectEmotionsCount, Tag
 from api.permissions import PostPermission
-
 
 class PostViewSet(ModelViewSet):
     """Description: PostViewSet.
@@ -52,6 +52,14 @@ class PostViewSet(ModelViewSet):
         ```
         """
         response = super(PostViewSet, self).list(request)
+        blocks = request.user.blocks()
+        #del(post, [])
+        for post in response.data.get('results'):
+
+            for block_user in blocks:
+                if post.get('author') == block_user.id:
+                    print(post.get('author'))
+                    print('post bloqueado')
         return response
 
     def create(self, request):
@@ -294,7 +302,7 @@ class PostViewSet(ModelViewSet):
         """
         API endpoint that gets the posts of a given user
         ---
-        The "content" camp don't show up if you're not the loged user
+        The "content" camp don't show up if you're not the logged user
         ---
         Response example:
         ```
