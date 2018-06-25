@@ -57,6 +57,10 @@ class Student(AbstractUser):
     REQUIRED_FIELDS = []
 
     def blocks(self):
+        """
+        This method returns all users that this user is not allowed to see their
+        content, because either they blocked him or the other way around
+        """
         blocker = Block.objects.filter(blocker=self)
         blockeds_users = []
 
@@ -69,6 +73,25 @@ class Student(AbstractUser):
 
         return blockeds_users
 
+    def filter_blocked_posts(self, posts):
+        """
+        This method removes all posts that this user is not allowed to see
+        """
+        blocks = self.blocks()
+        i = 0
+        temp_dict = posts
+        print(posts.__dict__)
+        for post in temp_dict:
+            blocked = False
+            for block_user in blocks:
+                if post.get('author') == block_user.id:
+                    blocked = True
+            if not blocked:
+                pass
+            else:
+                del(temp_dict[i])
+            i=i+1
+        return temp_dict
 
 class Tag(models.Model):
     description = models.CharField(max_length=200, unique=True)
