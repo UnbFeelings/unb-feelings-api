@@ -1,4 +1,3 @@
-import pprint
 from django.shortcuts import get_object_or_404
 
 from rest_framework.viewsets import ModelViewSet
@@ -52,15 +51,23 @@ class PostViewSet(ModelViewSet):
         ```
         """
         response = super(PostViewSet, self).list(request)
-        blocks = request.user.blocks()
-        #del(post, [])
-        for post in response.data.get('results'):
 
-            for block_user in blocks:
-                if post.get('author') == block_user.id:
-                    print(post.get('author'))
-                    print('post bloqueado')
-        return response
+        if request.user:
+            blocks = request.user.blocks()
+            i = 0
+            temp_dict = response.data.get('results')
+            for post in temp_dict:
+                blocked = False
+                for block_user in blocks:
+                    if post.get('author') == block_user.id:
+                        blocked = True
+                if not blocked:
+                    pass
+                else:
+                    del(temp_dict[i])
+                i=i+1
+
+        return Response(temp_dict)
 
     def create(self, request):
         """

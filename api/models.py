@@ -65,7 +65,7 @@ class Student(AbstractUser):
 
         blocked = Block.objects.filter(blocked=self)
         for user_block in blocked:
-            blockeds_users.append(user_block.blocked)
+            blockeds_users.append(user_block.blocker)
 
         return blockeds_users
 
