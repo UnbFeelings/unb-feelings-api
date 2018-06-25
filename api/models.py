@@ -73,25 +73,16 @@ class Student(AbstractUser):
 
         return blockeds_users
 
-    def filter_blocked_posts(self, posts):
+    def filter_blocked_posts(self, query_posts):
         """
         This method removes all posts that this user is not allowed to see
         """
         blocks = self.blocks()
-        i = 0
-        temp_dict = posts
-        print(posts.__dict__)
-        for post in temp_dict:
-            blocked = False
-            for block_user in blocks:
-                if post.get('author') == block_user.id:
-                    blocked = True
-            if not blocked:
-                pass
-            else:
-                del(temp_dict[i])
-            i=i+1
-        return temp_dict
+        filtered_query_posts = query_posts
+
+        for block_user in blocks:
+            filtered_query_posts = filtered_query_posts.exclude(author=block_user)
+        return filtered_query_posts
 
 class Tag(models.Model):
     description = models.CharField(max_length=200, unique=True)

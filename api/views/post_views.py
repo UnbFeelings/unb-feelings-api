@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
-
+from django.contrib.auth.models import AnonymousUser
+from django.db.models.query import QuerySet
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, list_route
 from rest_framework.response import Response
@@ -50,15 +51,24 @@ class PostViewSet(ModelViewSet):
         }
         ```
         """
-        response = super(PostViewSet, self).list(request)
 
-        user = request.user
-        if user:
-            temp_dict = user.filter_blocked_posts(response.data.get('results'))
-
-            return Response(temp_dict)
+        if not isinstance(request.user, AnonymousUser):
+            filtered_posts = request.user.filter_blocked_posts(self.queryset)
+            posts_paginated = self.paginate_queryset(filtered_posts)
         else:
-            return response
+            posts_paginated = self.paginate_queryset(self.queryset)
+
+        if posts_paginated is not None:
+            serializer = PostSerializer(
+            data=posts_paginated, many=True, context={'request': request})
+            serializer.is_valid()
+            return self.get_paginated_response(serializer.data)
+        else:
+            data = PostSerializer(
+                data=filtered_posts, many=True, context={'request': request})
+
+            data.is_valid()
+            return Response(data.data)
 
     def create(self, request):
         """
@@ -166,19 +176,7 @@ class PostViewSet(ModelViewSet):
                     "tag": [
                             {
                                 "id": 1,
-                                "description": "TAG1",            blocks = request.user.blocks()
-            i = 0
-            temp_dict = response.data.get('results')
-            for post in temp_dict:
-                blocked = False
-                for block_user in blocks:
-                    if post.get('author') == block_user.id:
-                        blocked = True
-                if not blocked:
-                    pass
-                else:
-                    del(temp_dict[i])
-                i=i+1
+                                "description": "TAG1",
                                 "quantity": 2
                             }
                     ],
@@ -189,6 +187,12 @@ class PostViewSet(ModelViewSet):
         }
         ```
         """
+        if not isinstance(request.user, AnonymousUser):
+            blocked_users = request.user.blocks()
+            user =  Post.objects.get(id=pk).author
+            if user in blocked_users:
+                return Response(None)
+
         response = super(PostViewSet, self).retrieve(request, pk)
         return response
 
@@ -347,8 +351,14 @@ class PostViewSet(ModelViewSet):
         ```
         """
         user = get_object_or_404(Student, pk=user_id)
-        posts = Post.objects.all().filter(author=user)
-        posts_paginated = self.paginate_queryset(posts)
+        posts = Post.objects.filter(author=user)
+
+        if not isinstance(request.user, AnonymousUser):
+            blocked_users = request.user.blocks()
+            if user in blocked_users:
+                return Response(None)
+            else:
+                posts_paginated = self.paginate_queryset(posts)
 
         if posts_paginated is not None:
             serializer = PostSerializer(
@@ -404,18 +414,16 @@ class PostViewSet(ModelViewSet):
         """
         subject = get_object_or_404(Subject, pk=subject_id)
         posts = Post.objects.all().filter(subject=subject)
-        posts_paginated = self.paginate_queryset(posts)
+
+        if not isinstance(request.user, AnonymousUser):
+            filtered_posts = request.user.filter_blocked_posts(posts)
+            posts_paginated = self.paginate_queryset(filtered_posts)
+        else:
+            posts_paginated = self.paginate_queryset(posts)
 
         if posts_paginated is not None:
-            if request.user:
-                serializer = PostSerializer(
-                data=posts_paginated, many=True, context={'request': request})
-                serializer.is_valid()
-                temp_dict = request.user.filter_blocked_posts(serializer.data)
-            else:
-                temp_dict = posts_paginated
             serializer = PostSerializer(
-            data=temp_dict, many=True, context={'request': request})
+            data=posts_paginated, many=True, context={'request': request})
 
             serializer.is_valid()
             return self.get_paginated_response(serializer.data)
