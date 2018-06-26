@@ -195,9 +195,3 @@ class StudentViewSet(ModelViewSet):
         CITY_NAMES = json.loads(open("api/fixtures/city_names.json").read())
         anonymous_name = {'anonymous_name': random.choice(CITY_NAMES)}
         return Response(anonymous_name, status=status.HTTP_200_OK)
-
-    @api_view(['GET'])
-    def block_user(request, user_id):
-        if not isinstance(request.user, AnonymousUser):
-            request.user.block_user(user_id)
-            return Response('blocked', status=status.HTTP_200_OK)

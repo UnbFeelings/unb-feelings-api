@@ -122,3 +122,22 @@ class PostPermission(permissions.BasePermission):
             return True
 
         return post.author == request.user
+
+class BlockPermissions(permissions.BasePermission):
+    """
+    Only logged users can access block class view set
+    """
+
+    def has_permission(self, request, view):
+        """
+        Permissions for routes:
+            GET /posts/
+            POST /posts/
+        """
+        if not request.user:
+            return False
+
+        if request.user.is_anonymous:
+            return False
+
+        return request.user.is_authenticated
