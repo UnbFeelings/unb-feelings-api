@@ -56,6 +56,12 @@ class Student(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    def block_user(self, user_id):
+        block = Block()
+        block.blocker = self
+        block.blocked = Student.objects.get(id=user_id)
+        block.save()
+
     def blocks(self):
         """
         This method returns all users that this user is not allowed to see their
