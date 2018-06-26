@@ -9,6 +9,8 @@ from api.permissions import StudentPermissions
 
 import json
 import random
+import os.path
+import time
 
 
 class StudentViewSet(ModelViewSet):
@@ -192,6 +194,15 @@ class StudentViewSet(ModelViewSet):
         ```
         """
         # The city names are sorted in alphabetic order
+        last_modification_time = int(os.path.getmtime('api/fixtures/city_names.json'))
+        current_time = int(time.time())
+
         CITY_NAMES = json.loads(open("api/fixtures/city_names.json").read())
-        anonymous_name = {'anonymous_name': random.choice(CITY_NAMES)}
+        if(current_time - last_modification_time > 2):
+            random.shuffle(CITY_NAMES)
+            with open('api/fixtures/city_names.json', 'w') as the_file:
+                        the_file.write(json.dumps(CITY_NAMES))
+
+        user_id = int(request.query_params.get('user'))
+        anonymous_name = {'anonymous_name': CITY_NAMES[user_id]}
         return Response(anonymous_name, status=status.HTTP_200_OK)
