@@ -141,3 +141,16 @@ class BlockPermissions(permissions.BasePermission):
             return False
 
         return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, block):
+        """
+        Permissions for routes:
+            GET /posts/:id
+            PUT/PATCH /posts/:id
+            DELETE /posts/:id
+        """
+
+        if not request.user:
+            return False
+
+        return block.blocker == request.user
