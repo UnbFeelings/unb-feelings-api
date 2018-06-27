@@ -2,15 +2,14 @@
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
 from rest_framework import viewsets, mixins
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, DestroyAPIView
 
 from api.serializers import SupportSerializer
 from api.models import Support
 from api.permissions import GetSupportPermission
 
 
-class SupportViewSet(mixins.DestroyModelMixin,
-                     viewsets.GenericViewSet):
+class SupportViewSet(viewsets.GenericViewSet):
     """Description: SupportViewSet.
 
     API endpoint that allows support to be viewed, created, deleted or edited.
@@ -66,15 +65,8 @@ class SupportViewSet(mixins.DestroyModelMixin,
             data.is_valid()
             return Response(data.data)
 
-    def destroy(self, request, pk=None):
-        """
-        API endpoint that allows courses to be deleted.
-        """
-        response = super(SupportViewSet, self).destroy(request, pk)
-        return response
 
-
-class SupportCreate(CreateAPIView):
+class SupportCreate(CreateAPIView, DestroyAPIView):
     queryset = Support.objects.all()
     serializer_class = SupportSerializer
     permission_classes = (GetSupportPermission, )
