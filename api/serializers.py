@@ -146,21 +146,21 @@ class SubjectEmotionsCountSerializer(serializers.Serializer):
     bad_count = serializers.IntegerField(min_value=0)
 
 class BlockSerializer(serializers.ModelSerializer):
-    blocked_id = serializers.IntegerField(min_value=0,write_only=True)
-    blocker_id = PrimaryKeyRelatedField(default=CurrentUserDefault(), read_only=True)
+    blocked = PrimaryKeyRelatedField(required=True, queryset=Student.objects.all())
+    blocker = PrimaryKeyRelatedField(default=CurrentUserDefault(), read_only=True)
 
     class Meta:
         model = Block
 
         fields = [
-            'blocked_id',
-            'blocker_id',
+            'blocked',
+            'blocker',
         ]
 
     def get_or_create(self):
         defaults = self.validated_data.copy()
-        blocked = defaults.pop('blocked_id')
+        blocked = defaults.pop('blocked')
         print(blocked)
-        blocker = defaults.pop('blocker_id').id
+        blocker = defaults.pop('blocker')
         print(blocker)
         return Block.objects.get_or_create(blocked=blocked, blocker=blocker)
