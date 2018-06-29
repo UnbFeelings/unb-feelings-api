@@ -57,7 +57,10 @@ class Student(AbstractUser):
     REQUIRED_FIELDS = []
 
     def list_blocked_users(self):
-        return Block.objects.filter(blocker=self)
+        blocks = Block.objects.filter(blocker=self)
+        blocks = blocks.values_list('blocked', flat=True)
+
+        return Student.objects.filter(pk__in=blocks)
 
     def block_user(self, user_id):
         block = Block()

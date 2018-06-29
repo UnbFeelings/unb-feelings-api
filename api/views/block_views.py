@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 
 from api.permissions import BlockPermissions
 from api.serializers import BlockSerializer
+from api.models import Block
 
 class BlockViewSet(ModelViewSet):
     """Description: BlockViewSet.
@@ -17,7 +18,7 @@ class BlockViewSet(ModelViewSet):
         """
         Override of query set method to return only user blocked users
         """
-        return self.request.user.list_blocked_users()
+        return Block.objects.filter(blocker=self.request.user)
 
     def list(self, request):
         """
