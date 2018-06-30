@@ -352,6 +352,7 @@ class PostViewSet(ModelViewSet):
         """
         user = get_object_or_404(Student, pk=user_id)
         posts = Post.objects.filter(author=user)
+        posts_paginated = None
 
         if not isinstance(request.user, AnonymousUser):
             blocked_users = request.user.blocks()

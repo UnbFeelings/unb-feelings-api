@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import status
 
 from api.permissions import BlockPermissions
 from api.serializers import BlockSerializer
@@ -40,5 +41,6 @@ class BlockViewSet(ModelViewSet):
         """
         API endpoint that allows blocks to be deleted.
         """
-        response = super(StudentViewSet, self).destroy(request, pk)
-        return response
+        instance = Block.objects.get(blocked=pk, blocker=self.request.user)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)

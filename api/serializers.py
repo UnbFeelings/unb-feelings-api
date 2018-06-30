@@ -160,7 +160,6 @@ class BlockSerializer(serializers.ModelSerializer):
     def get_or_create(self):
         defaults = self.validated_data.copy()
         blocked = defaults.pop('blocked')
-        print(blocked)
         blocker = defaults.pop('blocker')
-        print(blocker)
+
         return Block.objects.get_or_create(blocked=blocked, blocker=blocker)
