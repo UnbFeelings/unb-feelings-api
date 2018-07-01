@@ -26,7 +26,6 @@ class BlockViewSet(ModelViewSet):
         API endpoint that allows user to list all their blocks.
         """
         response = super(BlockViewSet, self).list(request)
-        print(response.data)
         return response
 
     def create(self, request):
