@@ -35,6 +35,24 @@ spec:
           image: gcr.io/unbfeelings/postgres:latest
           ports:
             - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/db-data
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
 ---
 apiVersion: v1
 kind: Service
@@ -49,5 +67,19 @@ spec:
       protocol: TCP
       targetPort: 5432
   type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+spec:
+  selector:
+    app: api
+  ports:
+    - name: api
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+  type: LoadBalancer
     
 
