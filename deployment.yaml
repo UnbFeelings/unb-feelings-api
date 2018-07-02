@@ -12,11 +12,20 @@ spec:
       labels:
         app: api
     spec:
+      volumes:
+        - name: shared
+          emptyDir: {}
       containers:
         - name: api
           image: gcr.io/unbfeelings/api:latest
+          volumeMounts:
+            - name: shared
+              mountPath: /software/unbfeelings/staticfiles
         - name: nginx
           image: gcr.io/unbfeelings/nginx:latest
+          volumeMounts:
+            - name: shared
+              mountPath: /usr/share/nginx/html
 ---
 apiVersion: "extensions/v1beta1"
 kind: Deployment
