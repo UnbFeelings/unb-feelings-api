@@ -5,7 +5,7 @@ services:
     image: nginx:latest
     volumes:
       - ./nginx/production.conf:/etc/nginx/conf.d/production.conf
-      - ../unbfeelings/staticfiles:/usr/share/nginx/html
+      - static_content:/usr/share/nginx/html
     ports:
       - "8001:8000"
     restart: unless-stopped
@@ -16,6 +16,8 @@ services:
   unbfeelings-prod:
     image: unbfeelings/api:latest
     restart: unless-stopped
+    volumes:
+      - static_content:/software/unbfeelings/staticfiles
     depends_on:
       - db
 
@@ -23,3 +25,6 @@ services:
   db:
     image: postgres
     restart: unless-stopped
+
+volumes:
+  static_content:
