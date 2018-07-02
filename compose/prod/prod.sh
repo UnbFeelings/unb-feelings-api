@@ -32,5 +32,8 @@ python3 manage.py migrate
 echo "Collect staticfiles"
 python3 manage.py collectstatic --noinput
 
+echo "Populate db"
+python3 manage.py populatedb
+
 echo "Run server"
 gunicorn --bind 0.0.0.0:8000 unbfeelings.wsgi

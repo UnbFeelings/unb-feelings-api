@@ -108,5 +108,18 @@ spec:
       protocol: TCP
       targetPort: 8001
   type: LoadBalancer
-    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test
+spec:
+  selector:
+    app: api
+  ports:
+    - name: test
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+  type: LoadBalancer
 

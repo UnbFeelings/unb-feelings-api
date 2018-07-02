@@ -7,13 +7,13 @@ services:
       - ./nginx/production.conf:/etc/nginx/conf.d/production.conf
       - static_content:/usr/share/nginx/html
     ports:
-      - "8001:8000"
+      - "8001:8001"
     restart: unless-stopped
     depends_on:
       - unbfeelings-prod
 
   # Backend production enviroment
-  unbfeelings-prod:
+  api:
     image: unbfeelings/api:latest
     restart: unless-stopped
     volumes:
