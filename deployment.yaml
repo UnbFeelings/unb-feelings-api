@@ -18,11 +18,15 @@ spec:
       containers:
         - name: api
           image: gcr.io/unbfeelings/api:latest
+          ports:
+            - containerPort: 8000
           volumeMounts:
             - name: shared
               mountPath: /software/unbfeelings/staticfiles
         - name: nginx
           image: gcr.io/unbfeelings/nginx:latest
+          ports:
+            - containerPort: 8001
           volumeMounts:
             - name: shared
               mountPath: /usr/share/nginx/html
@@ -82,29 +86,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: api
-  labels:
-    name: api
-spec:
-  selector:
-    app: api
-  ports:
-    - name: api
-      port: 8000
-      protocol: TCP
-      targetPort: 8000
-  type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
   name: api-out
 spec:
   selector:
     app: api
   ports:
     - name: api-out
-      port: 8001
+      port: 80
       protocol: TCP
       targetPort: 8001
   type: LoadBalancer
@@ -118,7 +106,7 @@ spec:
     app: api
   ports:
     - name: test
-      port: 8000
+      port: 80
       protocol: TCP
       targetPort: 8000
   type: LoadBalancer
