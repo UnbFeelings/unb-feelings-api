@@ -161,6 +161,25 @@ class SupportSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
+        """
+        API endpoint that allows supports to be made.
+        ---
+        Body example:
+        ```
+        {
+            "name": "CALCULO 4",
+            "course": 2
+        }
+        ```
+        Response example:
+        ```
+        {
+            "id": 4,
+            "name": "CALCULO 4",
+            "course": 2
+        }
+        ```
+        """
         student_from = self.context['request'].user
         student_to = self.context['view'].kwargs['pk']
         validated_data['student_from'] = student_from
