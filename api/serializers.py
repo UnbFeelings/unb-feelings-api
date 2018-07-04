@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.request import Request
 
 from .models import (
-    Campus, Course, Post, Student, Subject, Tag
+    Campus, Course, Post, Student, Subject, Tag, Support
 )
 
 
@@ -138,8 +138,51 @@ class PostSerializer(serializers.ModelSerializer):
 
         return None
 
+
 class SubjectEmotionsCountSerializer(serializers.Serializer):
 
     subject_name = serializers.CharField(max_length=200)
     good_count = serializers.IntegerField(min_value=0)
     bad_count = serializers.IntegerField(min_value=0)
+
+
+class SupportSerializer(serializers.ModelSerializer):
+    student_from = serializers.PrimaryKeyRelatedField(read_only=True)
+    student_to = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Support
+        fields = [
+            'id',
+            'message',
+            'created_at',
+            'student_from',
+            'student_to'
+        ]
+
+    def create(self, validated_data):
+        """
+        API endpoint that allows supports to be made.
+        ---
+        Body example:
+        ```
+        {
+            "name": "CALCULO 4",
+            "course": 2
+        }
+        ```
+        Response example:
+        ```
+        {
+            "id": 4,
+            "name": "CALCULO 4",
+            "course": 2
+        }
+        ```
+        """
+        student_from = self.context['request'].user
+        student_to = self.context['view'].kwargs['pk']
+        validated_data['student_from'] = student_from
+        validated_data['student_to'] = Student.objects.get(pk=int(student_to))
+
+        return Support.objects.create(**validated_data)
