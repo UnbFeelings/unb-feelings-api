@@ -138,16 +138,31 @@ class Post(models.Model):
         return out
 
 
+class Support(models.Model):
+    student_from = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="supports_given"
+        )
+    student_to = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="supports_received"
+        )
+    message = models.CharField(max_length=300)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class SubjectEmotionsCount():
 
-    def __init__(self, subject_name, good_count = 0, bad_count = 0):
+    def __init__(self, subject_name, good_count=0, bad_count=0):
         self.subject_name = subject_name
         self.good_count = good_count
         self.bad_count = bad_count
 
     def __str__(self):
         count = {'good': self.good_count,
-                      'bad': self.bad_count}
+                 'bad': self.bad_count}
         out = '({}, {})'.format(self.subject_name, count)
         return out
 
