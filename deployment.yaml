@@ -86,28 +86,22 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-out
+  name: nginx-port
 spec:
-  selector:
+  selector: 
     app: api
   ports:
-    - name: api-out
+    - name: nginx-port
       port: 80
       protocol: TCP
       targetPort: 8001
-  type: LoadBalancer
+  type: NodePort
 ---
-apiVersion: v1
-kind: Service
+apiVersion: extensions/v1beta1
+kind: Ingress
 metadata:
-  name: test
+  name: basic-ingress
 spec:
-  selector:
-    app: api
-  ports:
-    - name: test
-      port: 80
-      protocol: TCP
-      targetPort: 8000
-  type: LoadBalancer
-
+  backend:
+    serviceName: nginx-port
+    servicePort: 80
