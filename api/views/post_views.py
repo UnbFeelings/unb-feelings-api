@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
-
+from django.contrib.auth.models import AnonymousUser
+from django.db.models.query import QuerySet
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, list_route
 from rest_framework.response import Response
@@ -7,7 +8,6 @@ from rest_framework.response import Response
 from api.serializers import PostSerializer, SubjectEmotionsCountSerializer
 from api.models import Post, Student, Subject, SubjectEmotionsCount, Tag
 from api.permissions import PostPermission
-
 
 class PostViewSet(ModelViewSet):
     """Description: PostViewSet.
@@ -51,8 +51,24 @@ class PostViewSet(ModelViewSet):
         }
         ```
         """
-        response = super(PostViewSet, self).list(request)
-        return response
+
+        if not isinstance(request.user, AnonymousUser):
+            filtered_posts = request.user.filter_blocked_posts(self.queryset)
+            posts_paginated = self.paginate_queryset(filtered_posts)
+        else:
+            posts_paginated = self.paginate_queryset(self.queryset)
+
+        if posts_paginated is not None:
+            serializer = PostSerializer(
+            data=posts_paginated, many=True, context={'request': request})
+            serializer.is_valid()
+            return self.get_paginated_response(serializer.data)
+        else:
+            data = PostSerializer(
+                data=filtered_posts, many=True, context={'request': request})
+
+            data.is_valid()
+            return Response(data.data)
 
     def create(self, request):
         """
@@ -171,6 +187,12 @@ class PostViewSet(ModelViewSet):
         }
         ```
         """
+        if not isinstance(request.user, AnonymousUser):
+            blocked_users = request.user.blocks()
+            user =  Post.objects.get(id=pk).author
+            if user in blocked_users:
+                return Response(None)
+
         response = super(PostViewSet, self).retrieve(request, pk)
         return response
 
@@ -294,7 +316,7 @@ class PostViewSet(ModelViewSet):
         """
         API endpoint that gets the posts of a given user
         ---
-        The "content" camp don't show up if you're not the loged user
+        The "content" camp don't show up if you're not the logged user
         ---
         Response example:
         ```
@@ -329,8 +351,15 @@ class PostViewSet(ModelViewSet):
         ```
         """
         user = get_object_or_404(Student, pk=user_id)
-        posts = Post.objects.all().filter(author=user)
-        posts_paginated = self.paginate_queryset(posts)
+        posts = Post.objects.filter(author=user)
+        posts_paginated = None
+
+        if not isinstance(request.user, AnonymousUser):
+            blocked_users = request.user.blocks()
+            if user in blocked_users:
+                return Response(None)
+            else:
+                posts_paginated = self.paginate_queryset(posts)
 
         if posts_paginated is not None:
             serializer = PostSerializer(
@@ -386,19 +415,22 @@ class PostViewSet(ModelViewSet):
         """
         subject = get_object_or_404(Subject, pk=subject_id)
         posts = Post.objects.all().filter(subject=subject)
-        posts_paginated = self.paginate_queryset(posts)
+
+        if not isinstance(request.user, AnonymousUser):
+            filtered_posts = request.user.filter_blocked_posts(posts)
+            posts_paginated = self.paginate_queryset(filtered_posts)
+        else:
+            posts_paginated = self.paginate_queryset(posts)
 
         if posts_paginated is not None:
             serializer = PostSerializer(
-                data=posts_paginated, many=True, context={'request': request})
+            data=posts_paginated, many=True, context={'request': request})
 
             serializer.is_valid()
             return self.get_paginated_response(serializer.data)
         else:
-
             data = PostSerializer(
                 data=posts, many=True, context={'request': request})
-
             data.is_valid()
             return Response(data.data)
 

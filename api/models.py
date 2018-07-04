@@ -3,7 +3,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-
+from itertools import chain
 
 class Campus(models.Model):
     name = models.CharField(max_length=100)
@@ -56,6 +56,45 @@ class Student(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    def list_blocked_users(self):
+        blocks = Block.objects.filter(blocker=self)
+        blocks = blocks.values_list('blocked', flat=True)
+
+        return Student.objects.filter(pk__in=blocks)
+
+    def block_user(self, user_id):
+        block = Block()
+        block.blocker = self
+        block.blocked = Student.objects.get(id=user_id)
+        block.save()
+
+    def blocks(self):
+        """
+        This method returns all users that this user is not allowed to see their
+        content, because either they blocked him or the other way around
+        """
+        blocker = Block.objects.filter(blocker=self)
+        blockeds_users = []
+
+        for user_block in blocker:
+            blockeds_users.append(user_block.blocked)
+
+        blocked = Block.objects.filter(blocked=self)
+        for user_block in blocked:
+            blockeds_users.append(user_block.blocker)
+
+        return blockeds_users
+
+    def filter_blocked_posts(self, query_posts):
+        """
+        This method removes all posts that this user is not allowed to see
+        """
+        blocks = self.blocks()
+        filtered_query_posts = query_posts
+
+        for block_user in blocks:
+            filtered_query_posts = filtered_query_posts.exclude(author=block_user)
+        return filtered_query_posts
 
 class Tag(models.Model):
     description = models.CharField(max_length=200, unique=True)
@@ -142,3 +181,7 @@ def validate_post_emotion_choice(sender, instance, **kwargs):
 
 
 models.signals.pre_save.connect(validate_post_emotion_choice, sender=Post)
+
+class Block(models.Model):
+    blocker = models.ForeignKey(Student, on_delete=None, related_name="blocker")
+    blocked = models.ForeignKey(Student, on_delete=None, related_name="blocked")

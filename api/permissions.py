@@ -124,6 +124,39 @@ class PostPermission(permissions.BasePermission):
         return post.author == request.user
 
 
+class BlockPermissions(permissions.BasePermission):
+    """
+    Only logged users can access block class view set
+    """
+
+    def has_permission(self, request, view):
+        """
+        Permissions for routes:
+            GET /posts/
+            POST /posts/
+        """
+        if not request.user:
+            return False
+
+        if request.user.is_anonymous:
+            return False
+
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, block):
+        """
+        Permissions for routes:
+            GET /posts/:id
+            PUT/PATCH /posts/:id
+            DELETE /posts/:id
+        """
+
+        if not request.user:
+            return False
+
+        return block.blocker == request.user
+
+
 class GetSupportPermission(permissions.BasePermission):
     """
     Admins and the post owner can do all requests.

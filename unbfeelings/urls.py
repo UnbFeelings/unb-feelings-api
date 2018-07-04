@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_swagger.views import get_swagger_view
 
-from api.views import (CampusViewSet, CourseViewSet, CustomObtainJWTToken,
+from api.views import (BlockViewSet, CampusViewSet, CourseViewSet, CustomObtainJWTToken,
                        DiagnosisViewSet, PostViewSet, StudentViewSet,
                        SubjectViewSet, TagViewSet, SupportViewSet, SupportCreate)
 
@@ -18,6 +18,7 @@ ROUTER.register(r'users', StudentViewSet)
 ROUTER.register(r'tags', TagViewSet, base_name='tags')
 ROUTER.register(r'posts', PostViewSet, base_name='posts')
 ROUTER.register(r'campus', CampusViewSet, base_name='campus')
+ROUTER.register(r'block', BlockViewSet, base_name='block')
 ROUTER.register(r'support', SupportViewSet, base_name='support')
 
 

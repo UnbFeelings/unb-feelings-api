@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
+from rest_framework.serializers import ( CurrentUserDefault,
+    PrimaryKeyRelatedField )
 from rest_framework.request import Request
 
 from .models import (
-    Campus, Course, Post, Student, Subject, Tag, Support
+    Campus, Course, Post, Student, Subject, Tag, Block, Support
 )
 
 
@@ -50,7 +52,6 @@ class SubjectSerializer(serializers.ModelSerializer):
             return get_object_or_404(Subject.objects.all(), pk=data.get('id'))
 
         return super(SubjectSerializer, self).to_internal_value(data)
-
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -145,6 +146,24 @@ class SubjectEmotionsCountSerializer(serializers.Serializer):
     good_count = serializers.IntegerField(min_value=0)
     bad_count = serializers.IntegerField(min_value=0)
 
+class BlockSerializer(serializers.ModelSerializer):
+    blocked = PrimaryKeyRelatedField(required=True, queryset=Student.objects.all())
+    blocker = PrimaryKeyRelatedField(default=CurrentUserDefault(), read_only=True)
+
+    class Meta:
+        model = Block
+
+        fields = [
+            'blocked',
+            'blocker',
+        ]
+
+    def get_or_create(self):
+        defaults = self.validated_data.copy()
+        blocked = defaults.pop('blocked')
+        blocker = defaults.pop('blocker')
+
+        return Block.objects.get_or_create(blocked=blocked, blocker=blocker)
 
 class SupportSerializer(serializers.ModelSerializer):
     student_from = serializers.PrimaryKeyRelatedField(read_only=True)

@@ -1,11 +1,12 @@
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, list_route
+from django.shortcuts import get_object_or_404
 
 from api.serializers import StudentSerializer, CourseSerializer
 from api.models import Student, Course
-from api.permissions import StudentPermissions
+from api.permissions import StudentPermissions, BlockPermissions
 
 import json
 import random
@@ -178,6 +179,32 @@ class StudentViewSet(ModelViewSet):
         course_serializer = CourseSerializer(course)
         response.data['course'] = course_serializer.data
         return response
+
+    @list_route(
+        permission_classes=[BlockPermissions],
+        methods=['GET'],
+        url_path='blocks')
+    def user_blocks(self, request, user_id=None):
+        """
+        API endpoint that gets all users blockeds from a user
+        """
+        blockeds = self.request.user.list_blocked_users()
+
+        blockeds_paginated = self.paginate_queryset(blockeds)
+
+        if blockeds_paginated is not None:
+            serializer = StudentSerializer(
+                data=blockeds_paginated, many=True, context={'request': request})
+
+            serializer.is_valid()
+            return self.get_paginated_response(serializer.data)
+        else:
+
+            data = PostSerializer(
+                data=blockeds, many=True, context={'request': request})
+
+            data.is_valid()
+            return Response(data.data)
 
     @api_view(['GET'])
     def anonymous_name(request):
