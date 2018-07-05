@@ -57,19 +57,6 @@ class DiagnosisTestCase(APITestCase):
             post.created_at = WEEK_DAYS[i][0]
             post.save()
 
-    def test_get_weekly_feelings_of_unb(self):
-        """
-        get all weekly feelings of UNB
-        """
-        client = APIClient()
-        response = client.get("/api/diagnosis/")
-
-        self.assertEqual(200, response.status_code)
-
-        for day in WEEK_DAYS:
-            post = Post.objects.filter(created_at=day[0]).first()
-            self.assertEqual(post.id, response.data[day[1]][0]['id'])
-
     def test_invalid_target_raises_404_error(self):
         """
         When an invalid target is given an error 404 is returned
@@ -78,29 +65,6 @@ class DiagnosisTestCase(APITestCase):
         response = client.get("/api/diagnosis/?target={}".format("invalid"))
 
         self.assertEqual(404, response.status_code)
-
-    def test_get_posts_by_subject(self):
-        client = APIClient()
-        response = client.get("/api/diagnosis/?target={}&target_id={}".format(
-            "subject", self.c1.id))
-
-        self.assertEqual(200, response.status_code)
-
-        for (day_date, day_name) in self.c1_days:
-            post = Post.objects.filter(
-                created_at=day_date, subject=self.c1).first()
-
-            self.assertEqual(post.id, response.data[day_name][0]['id'])
-
-        response = client.get("/api/diagnosis/?target={}&target_id={}".format(
-            "subject", self.f1.id))
-
-        self.assertEqual(200, response.status_code)
-
-        for (day_date, day_name) in self.f1_days:
-            post = Post.objects.filter(
-                created_at=day_date, subject=self.f1).first()
-            self.assertEqual(post.id, response.data[day_name][0]['id'])
 
     def test_get_posts_by_student(self):
         client = APIClient()
