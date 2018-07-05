@@ -101,7 +101,17 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: api-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: api-static-ip
 spec:
-  backend:
-    serviceName: nginx-port
-    servicePort: 80
+  rules:
+  - http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: app-port
+          servicePort: 80
+      - path: /api/*
+        backend:
+          serviceName: nginx-port
+          servicePort: 80
